@@ -163,7 +163,16 @@ AS_IF([test "x$enable_openpower_pel_extension" == "xyes"],
        [AC_CHECK_HEADER(
             nlohmann/json.hpp,
             [],
-            [AC_MSG_ERROR([Could not find nlohmann/json.hpp])]])
+            [AC_MSG_ERROR([Could not find nlohmann/json.hpp])])
+
+       AX_PKG_CHECK_MODULES([LIBPLDM], [libpldm])]
+)
+
+AC_ARG_ENABLE([dont-send-pels-to-host],
+              AS_HELP_STRING([--enable-dont-send-pels-to-host],
+                   [Do not send PELs to the host. \
+                    Only applies when PELs are enabled.]),
+    [AX_APPEND_COMPILE_FLAGS([-DDONT_SEND_PELS_TO_HOST])]
 )
 
 AC_CONFIG_HEADERS([config.h])

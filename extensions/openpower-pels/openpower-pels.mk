@@ -1,10 +1,18 @@
 phosphor_log_manager_SOURCES += \
 	extensions/openpower-pels/entry_points.cpp \
+	extensions/openpower-pels/host_notifier.cpp \
 	extensions/openpower-pels/manager.cpp \
+	extensions/openpower-pels/pldm_interface.cpp \
 	extensions/openpower-pels/repository.cpp
 
 phosphor_log_manager_LDADD = \
 	libpel.la
+
+phosphor_log_manager_LDFLAGS += \
+	$(LIBPLDM_LIBS)
+
+phosphor_log_manager_CFLAGS = \
+	$(LIBPLDM_CFLAGS)
 
 noinst_LTLIBRARIES = libpel.la
 
@@ -18,7 +26,7 @@ libpel_la_SOURCES = \
 	extensions/openpower-pels/failing_mtms.cpp \
 	extensions/openpower-pels/fru_identity.cpp \
 	extensions/openpower-pels/generic.cpp \
-	extensions/openpower-pels/hexdump.cpp \
+	extensions/openpower-pels/json_utils.cpp \
 	extensions/openpower-pels/log_id.cpp \
 	extensions/openpower-pels/mru.cpp \
 	extensions/openpower-pels/mtms.cpp \
