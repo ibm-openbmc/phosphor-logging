@@ -3677,6 +3677,16 @@
                             }
                         ]
                     }
+                ],
+                "CalloutsWhenNoADMatch": [
+                    {
+                        "CalloutList": [
+                            {
+                                "Priority": "high",
+                                "SymbolicFRU": "overtemp"
+                            }
+                        ]
+                    }
                 ]
             },
 
@@ -3756,6 +3766,16 @@
                             }
                         ]
                     }
+                ],
+                "CalloutsWhenNoADMatch": [
+                    {
+                        "CalloutList": [
+                            {
+                                "Priority": "high",
+                                "SymbolicFRU": "overtemp"
+                            }
+                        ]
+                    }
                 ]
             },
 
@@ -3832,6 +3852,16 @@
                                 "CalloutList": [
                                     { "Priority": "high", "SymbolicFRU": "ambient_temp" }
                                 ]
+                            }
+                        ]
+                    }
+                ],
+                "CalloutsWhenNoADMatch": [
+                    {
+                        "CalloutList": [
+                            {
+                                "Priority": "high",
+                                "SymbolicFRU": "overtemp"
                             }
                         ]
                     }
