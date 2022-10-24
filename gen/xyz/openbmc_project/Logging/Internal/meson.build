@@ -4,7 +4,6 @@ generated_others += custom_target(
     'xyz/openbmc_project/Logging/Internal/Manager__markdown'.underscorify(),
     input: [ '../../../../../xyz/openbmc_project/Logging/Internal/Manager.interface.yaml',  ],
     output: [ 'Manager.md' ],
-    depend_files: sdbusplusplus_depfiles,
     command: [
         sdbuspp_gen_meson_prog, '--command', 'markdown',
         '--output', meson.current_build_dir(),
