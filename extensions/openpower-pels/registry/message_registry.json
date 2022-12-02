@@ -4452,6 +4452,17 @@
                 }
             },
 
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        {
+                            "Priority": "high",
+                            "Procedure": "system_vpd_correction"
+                        }
+                    ]
+                }
+            ],
+
             "Documentation": {
                 "Description": "System VPD restore failed",
                 "Message": "A system VPD restoration error occurred.",
@@ -4571,7 +4582,10 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        {
+                            "Priority": "high",
+                            "Procedure": "system_vpd_correction"
+                        }
                     ]
                 }
             ],
