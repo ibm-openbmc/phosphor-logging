@@ -15,6 +15,7 @@
  */
 #include "repository.hpp"
 
+#include <fcntl.h>
 #include <sys/stat.h>
 
 #include <fstream>
@@ -288,9 +289,8 @@ std::optional<sdbusplus::message::unix_fd> Repository::getPELFD(const LogID& id)
     auto pel = findPEL(id);
     if (pel != _pelAttributes.end())
     {
-        FILE* fp = fopen(pel->second.path.c_str(), "rb");
-
-        if (fp == nullptr)
+        int fd = open(pel->second.path.c_str(), O_RDONLY | O_NONBLOCK);
+        if (fd == -1)
         {
             auto e = errno;
             log<level::ERR>("Unable to open PEL File", entry("ERRNO=%d", e),
@@ -300,8 +300,7 @@ std::optional<sdbusplus::message::unix_fd> Repository::getPELFD(const LogID& id)
 
         // Must leave the file open here.  It will be closed by sdbusplus
         // when it sends it back over D-Bus.
-
-        return fileno(fp);
+        return fd;
     }
     return std::nullopt;
 }
