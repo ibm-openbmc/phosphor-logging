@@ -197,15 +197,20 @@ std::vector<std::string> LightPath::getInventoryPaths(
     const std::vector<std::string>& locationCodes) const
 {
     std::vector<std::string> paths;
-    std::string inventoryPath;
 
     for (const auto& locCode : locationCodes)
     {
         try
         {
-            auto inventoryPath =
+            auto inventoryPaths =
                 _dataIface.getInventoryFromLocCode(locCode, 0, true);
-            paths.push_back(std::move(inventoryPath));
+            for (const auto& path : inventoryPaths)
+            {
+                if (std::find(paths.begin(), paths.end(), path) == paths.end())
+                {
+                    paths.push_back(path);
+                }
+            }
         }
         catch (const std::exception& e)
         {
