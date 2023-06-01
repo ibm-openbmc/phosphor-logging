@@ -491,6 +491,7 @@ TEST_F(SRCTest, RegistryCalloutTest)
     message::Entry entry;
     entry.src.type = 0xBD;
     entry.src.reasonCode = 0xABCD;
+    entry.src.checkstopFlag = true;
     entry.subsystem = 0x42;
 
     entry.callouts = R"(
@@ -554,6 +555,15 @@ TEST_F(SRCTest, RegistryCalloutTest)
             .WillOnce(Return(std::vector<bool>{false, false, false}));
 
         SRC src{entry, ad, dataIface};
+
+        EXPECT_TRUE(
+            src.getErrorStatusFlag(SRC::ErrorStatusFlags::deconfigured));
+        EXPECT_TRUE(src.getErrorStatusFlag(SRC::ErrorStatusFlags::hwCheckstop));
+
+        const auto& hexwords = src.hexwordData();
+        auto mask = static_cast<uint32_t>(SRC::ErrorStatusFlags::deconfigured) |
+                    static_cast<uint32_t>(SRC::ErrorStatusFlags::hwCheckstop);
+        EXPECT_EQ(hexwords[5 - 2] & mask, mask);
 
         auto& callouts = src.callouts()->callouts();
         ASSERT_EQ(callouts.size(), 2);
