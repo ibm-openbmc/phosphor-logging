@@ -1,8 +1,8 @@
 project('phosphor-logging', 'cpp',
-    meson_version: '>=1.1.1',
+    meson_version: '>= 0.58.0',
     default_options: [
       'buildtype=debugoptimized',
-      'cpp_std=c++23',
+      'cpp_std=c++20',
       'warning_level=3',
       'werror=true',
       'libonly=' + (meson.is_subproject() ? 'true' : 'false'),
