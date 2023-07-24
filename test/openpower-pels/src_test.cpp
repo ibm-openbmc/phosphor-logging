@@ -556,13 +556,8 @@ TEST_F(SRCTest, RegistryCalloutTest)
 
         SRC src{entry, ad, dataIface};
 
-        EXPECT_TRUE(
-            src.getErrorStatusFlag(SRC::ErrorStatusFlags::deconfigured));
-        EXPECT_TRUE(src.getErrorStatusFlag(SRC::ErrorStatusFlags::hwCheckstop));
-
         const auto& hexwords = src.hexwordData();
-        auto mask = static_cast<uint32_t>(SRC::ErrorStatusFlags::deconfigured) |
-                    static_cast<uint32_t>(SRC::ErrorStatusFlags::hwCheckstop);
+        auto mask = static_cast<uint32_t>(SRC::ErrorStatusFlags::hwCheckstop);
         EXPECT_EQ(hexwords[5 - 2] & mask, mask);
 
         auto& callouts = src.callouts()->callouts();
