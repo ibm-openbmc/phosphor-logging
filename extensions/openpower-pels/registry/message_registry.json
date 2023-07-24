@@ -1546,6 +1546,7 @@
             {
                 "ReasonCode": "0xE510",
                 "SymptomIDFields": [ "SRCWord6", "SRCWord7", "SRCWord8" ],
+                "CheckstopFlag": true,
                 "Words6To9":
                 {
                     "6":
