@@ -104,7 +104,8 @@
 
                 "SymptomIDFields": {"$ref": "#/definitions/symptomID" },
 
-                "Words6To9": {"$ref": "#/definitions/srcWords6To9" }
+                "Words6To9": {"$ref": "#/definitions/srcWords6To9" },
+                "CheckstopFlag": {"$ref": "#/definitions/checkstopFlag" }
             },
 
             "required": ["ReasonCode", "Words6To9"],
@@ -136,6 +137,12 @@
             "description": "The first byte of the SRC ASCII string. Optional and defaults to BD.  The '11' SRC is only to be used for events related to power.",
             "type": "string",
             "enum": ["BD", "11"]
+        },
+
+        "checkstopFlag":
+        {
+            "description": "Indicates the SRC is for a hardware checkstop.",
+            "type": "boolean"
         },
 
         "docNotes":

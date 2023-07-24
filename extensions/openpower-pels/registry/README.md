@@ -218,6 +218,15 @@ words will be set to zero in the PEL.
 }
 ```
 
+### SRC Checkstop Flag
+
+This is used to indicate the PEL is for a hardware checkstop, and causes bit 0
+in hex word 5 of the SRC to be set.
+
+```json
+"CheckstopFlag": true
+```
+
 ### Documentation Fields
 The documentation fields are used by PEL parsers to display a human readable
 description of a PEL.  They are also the source for the Redfish event log

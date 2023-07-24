@@ -189,6 +189,11 @@ uint8_t getSRCType(const nlohmann::json& src, const std::string& name)
     return type;
 }
 
+bool getSRCCheckstopFlag(const nlohmann::json& src)
+{
+    return src["CheckstopFlag"].get<bool>();
+}
+
 std::optional<std::map<SRC::WordNum, SRC::AdditionalDataField>>
     getSRCHexwordFields(const nlohmann::json& src, const std::string& name)
 {
@@ -680,6 +685,11 @@ std::optional<Entry> Registry::lookup(const std::string& name, LookupType type,
             if (src.contains("SymptomIDFields"))
             {
                 entry.src.symptomID = helper::getSRCSymptomIDFields(src, name);
+            }
+
+            if (src.contains("CheckstopFlag"))
+            {
+                entry.src.checkstopFlag = helper::getSRCCheckstopFlag(src);
             }
 
             auto& doc = (*e)["Documentation"];

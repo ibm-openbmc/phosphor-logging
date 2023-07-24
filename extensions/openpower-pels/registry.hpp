@@ -103,7 +103,12 @@ struct SRC
     using AdditionalDataField = std::tuple<std::string, std::string>;
     std::optional<std::map<WordNum, AdditionalDataField>> hexwordADFields;
 
-    SRC() : type(0), reasonCode(0)
+    /**
+     * @brief If the checkstop flag should be set in hex word 5
+     */
+    bool checkstopFlag;
+
+    SRC() : type(0), reasonCode(0), checkstopFlag(false)
     {
     }
 };

@@ -84,7 +84,8 @@ const auto registryData = R"(
                         "Description": "bad voltage",
                         "AdditionalDataPropSource": "VOLTAGE"
                     }
-                }
+                },
+                "CheckstopFlag": true
             },
 
             "Documentation":
@@ -186,6 +187,7 @@ TEST_F(RegistryTest, TestFindEntry)
 
     EXPECT_EQ(entry->src.type, 0xBD);
     EXPECT_EQ(entry->src.reasonCode, 0x2333);
+    EXPECT_TRUE(entry->src.checkstopFlag);
 
     auto& hexwords = entry->src.hexwordADFields;
     EXPECT_TRUE(hexwords);
@@ -241,6 +243,7 @@ TEST_F(RegistryTest, TestFindEntryMinimal)
     EXPECT_EQ(entry->src.type, 0xBD);
     EXPECT_FALSE(entry->src.hexwordADFields);
     EXPECT_FALSE(entry->src.symptomID);
+    EXPECT_FALSE(entry->src.checkstopFlag);
 }
 
 TEST_F(RegistryTest, TestBadJSON)
