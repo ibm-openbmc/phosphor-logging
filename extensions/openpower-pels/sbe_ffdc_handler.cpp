@@ -216,7 +216,7 @@ void SbeFFDC::process(const sbeFfdcPacketType& ffdcPkt)
     ffdcFiles.push_back(pf);
 
     // save the file path to delete the file after usage.
-    paths.push_back(ffdcFile.getPath());
+    paths.emplace_back(ffdcFile.getPath(), pf.fd);
 
     // Format ffdc user data and create new file.
     std::string data;
@@ -231,7 +231,7 @@ void SbeFFDC::process(const sbeFfdcPacketType& ffdcPkt)
     pdf.fd = pelDataFile.getFd();
     ffdcFiles.push_back(pdf);
 
-    paths.push_back(pelDataFile.getPath());
+    paths.emplace_back(pelDataFile.getPath(), pdf.fd);
 }
 
 } // namespace sbe
