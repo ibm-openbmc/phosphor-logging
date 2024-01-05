@@ -3,11 +3,7 @@ libpldm_dep = dependency(
     default_options: ['oem-ibm=enabled'],
 )
 
-if cpp.has_header('nlohmann/json.hpp')
-    nlohmann_json_dep = declare_dependency()
-else
-    nlohmann_json_dep = dependency('nlohmann-json')
-endif
+nlohmann_json_dep = dependency('nlohmann_json', include_type: 'system')
 
 python_inst = import('python').find_installation('python3')
 python_ver = python_inst.language_version()
@@ -23,7 +19,7 @@ extra_sources = []
 extra_dependencies = []
 extra_args = []
 
-build_phal = get_option('phal').enabled()
+build_phal = get_option('phal').allowed()
 
 if build_phal
     extra_sources += [

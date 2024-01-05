@@ -480,6 +480,40 @@
         },
 
         {
+            "Name": "xyz.openbmc_project.Logging.Error.LogsCleared",
+            "Subsystem": "bmc_firmware",
+            "Severity": "non_error",
+
+            "SRC": {
+                "ReasonCode": "0x2007",
+                "Words6To9": {
+                    "6": {
+                        "Description": "Number of logs deleted",
+                        "AdditionalDataPropSource": "NUM_LOGS"
+                    }
+                }
+            },
+
+            "Documentation": {
+                "Description": "All event logs were deleted",
+                "Message": "All event logs were deleted",
+                "Notes": [
+                    "This is an informational error noting that ",
+                    "someone deleted all of the event logs."
+                ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 10
+                    }
+                ]
+            }
+        },
+
+        {
             "Name": "org.open_power.PHAL.Error.Boot",
             "Subsystem": "cec_hardware",
             "ComponentID": "0x3000",
@@ -770,7 +804,7 @@
         },
 
         {
-            "Name": "org.open_power.OCC.Firmware.PresenceMismatch",
+            "Name": "org.open_power.OCC.Firmware.Error.PresenceMismatch",
             "Subsystem": "bmc_firmware",
             "ComponentID": "0x2600",
             "Severity": "predictive",
@@ -799,7 +833,7 @@
         },
 
         {
-            "Name": "org.open_power.OCC.Device.SafeState",
+            "Name": "org.open_power.OCC.Device.Error.SafeState",
             "Subsystem": "processor_chip",
             "ComponentID": "0x2600",
             "Severity": "non_error",
@@ -820,7 +854,7 @@
         },
 
         {
-            "Name": "org.open_power.OCC.Device.ReadFailure",
+            "Name": "org.open_power.OCC.Device.Error.ReadFailure",
             "Subsystem": "cec_chip_iface",
             "ComponentID": "0x2600",
             "Severity": "predictive",
@@ -836,6 +870,26 @@
                 "Notes": [
                     "The BMC failed to communicate with the OCC and retried three times.",
                     "The BMC requests that the OCC reset."
+                ]
+            }
+        },
+
+        {
+            "Name": "org.open_power.OCC.Device.Error.OpenFailure",
+            "Subsystem": "cec_chip_iface",
+            "ComponentID": "0x2600",
+            "Severity": "predictive",
+
+            "SRC": {
+                "ReasonCode": "0x2684",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "OCC communication failure",
+                "Message": "BMC failed to communicate with the OCC",
+                "Notes": [
+                    "There was a failure trying to open an OCC device driver file"
                 ]
             }
         },
