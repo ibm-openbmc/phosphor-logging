@@ -237,7 +237,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -267,7 +267,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -276,6 +276,78 @@
             "Documentation": {
                 "Description": "Certificate verification failed",
                 "Message": "Certificate verification failed"
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Common.File.Error.Open",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x1000",
+            "SRC": {
+                "ReasonCode": "0x100D",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC0001" }
+                    ]
+                }
+            ],
+
+            "Documentation": {
+                "Description": "Failed to open a file",
+                "Message": "Failed to open a file",
+                "Notes": ["The file name is in a UserData section."]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Common.File.Error.Read",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x1000",
+            "SRC": {
+                "ReasonCode": "0x100E",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC0001" }
+                    ]
+                }
+            ],
+
+            "Documentation": {
+                "Description": "Failed to read a file",
+                "Message": "Failed to read a file",
+                "Notes": ["The file name is in a UserData section."]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Common.File.Error.Seek",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x1000",
+            "SRC": {
+                "ReasonCode": "0x100F",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC0001" }
+                    ]
+                }
+            ],
+
+            "Documentation": {
+                "Description": "Failed to seek in a file",
+                "Message": "Failed to seek in a file",
+                "Notes": ["The file name is in a UserData section."]
             }
         },
 
@@ -340,7 +412,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -382,7 +454,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" },
+                        { "Priority": "high", "Procedure": "BMC0001" },
                         { "Priority": "medium", "SymbolicFRU": "service_docs" }
                     ]
                 }
@@ -406,7 +478,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -632,7 +704,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -730,7 +802,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -783,7 +855,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "medium", "Procedure": "bmc_code" }
+                        { "Priority": "medium", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -923,7 +995,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "detected_issue_need_service"
+                            "Procedure": "BMC0008"
                         }
                     ]
                 }
@@ -978,7 +1050,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1030,7 +1102,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1065,7 +1137,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1095,7 +1167,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1129,7 +1201,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1163,7 +1235,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1197,7 +1269,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1231,7 +1303,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1265,7 +1337,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1299,7 +1371,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1333,7 +1405,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1367,7 +1439,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1400,7 +1472,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -1484,7 +1556,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "next_level_support"
+                            "Procedure": "BMC0002"
                         }
                     ]
                 }
@@ -2161,7 +2233,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "power_overcurrent" }
+                        { "Priority": "high", "Procedure": "BMC0005" }
                     ]
                 }
             ],
@@ -2259,7 +2331,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "power_overcurrent" }
+                        { "Priority": "high", "Procedure": "BMC0005" }
                     ]
                 }
             ],
@@ -4175,7 +4247,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -4205,7 +4277,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -4385,7 +4457,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -4464,7 +4536,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5379,7 +5451,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5411,7 +5483,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "system_vpd_correction"
+                            "Procedure": "BMC0007"
                         }
                     ]
                 }
@@ -5440,7 +5512,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5496,7 +5568,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5527,7 +5599,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "system_vpd_correction"
+                            "Procedure": "BMC0007"
                         }
                     ]
                 }
@@ -5618,7 +5690,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "bmc_code"
+                            "Procedure": "BMC0001"
                         }
                     ]
                 }
@@ -5646,7 +5718,7 @@
                     "CalloutList": [
                         {
                             "Priority": "high",
-                            "Procedure": "bmc_code"
+                            "Procedure": "BMC0001"
                         }
                     ]
                 }
@@ -5716,7 +5788,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5739,7 +5811,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5763,7 +5835,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5786,7 +5858,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5809,7 +5881,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5832,7 +5904,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5855,7 +5927,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5878,7 +5950,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5901,7 +5973,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5933,7 +6005,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5960,7 +6032,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -5982,7 +6054,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6003,7 +6075,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6024,7 +6096,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "medium", "Procedure": "bmc_code" }
+                        { "Priority": "medium", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6045,7 +6117,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6066,7 +6138,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6087,7 +6159,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6108,7 +6180,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6129,7 +6201,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6150,7 +6222,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "medium", "Procedure": "bmc_code" }
+                        { "Priority": "medium", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6171,7 +6243,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6192,7 +6264,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6213,7 +6285,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6234,7 +6306,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6255,7 +6327,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6276,7 +6348,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6298,7 +6370,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6319,7 +6391,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6340,7 +6412,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6361,7 +6433,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6382,7 +6454,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6403,7 +6475,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6424,7 +6496,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
@@ -6445,7 +6517,7 @@
             "Callouts": [
                 {
                     "CalloutList": [
-                        { "Priority": "high", "Procedure": "bmc_code" }
+                        { "Priority": "high", "Procedure": "BMC0001" }
                     ]
                 }
             ],
