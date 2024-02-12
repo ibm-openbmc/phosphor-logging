@@ -16,6 +16,17 @@ install_data(
     install_dir: get_option('datadir') / 'dbus-1' / 'system.d',
 )
 
+if (get_option('auditlog').allowed())
+    install_data(
+        'xyz.openbmc_project.Logging.AuditLog.service',
+        install_dir: systemd_system_unit_dir,
+    )
+    install_data(
+        'busconfig/phosphor-auditlog-config.conf',
+        install_dir: get_option('datadir') / 'dbus-1' / 'system.d',
+    )
+endif
+
 dbus_system_bus_services_dir = dependency('dbus-1').get_variable(
     'system_bus_services_dir',
     pkgconfig_define: ['prefix', get_option('prefix')],
