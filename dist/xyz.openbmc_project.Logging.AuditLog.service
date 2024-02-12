@@ -1,0 +1,11 @@
+[Unit]
+Description=Audit Log Services
+
+[Service]
+ExecStart=/usr/bin/phosphor-auditlog
+Restart=always
+Type=dbus
+BusName=xyz.openbmc_project.Logging.AuditLog
+
+[Install]
+WantedBy=multi-user.target
