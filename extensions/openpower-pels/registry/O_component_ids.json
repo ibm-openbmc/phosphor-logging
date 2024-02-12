@@ -19,4 +19,5 @@
     "E500": "bmc hw diags",
     "F100": "bmc faultlog",
     "F300": "bmc memory ECC errors"
+    "F400": "bmc memory errors"
 }
