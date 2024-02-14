@@ -227,7 +227,8 @@ bool ALParser::formatMsgReg(nlohmann::json& parsedEntry)
             break;
 
         default:
-            fillAuditEntry(parsedEntry);
+            /* Skip these entries */
+            return false;
             break;
     }
 
