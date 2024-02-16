@@ -170,6 +170,7 @@ void SbeFFDC::parse(int fd)
             // Not interested in the first 2 words (these are not ffdc)
             pktLenWords = lenWords - p10FfdcSkipWords;
             ffdcPkt.ffdcLengthInWords = pktLenWords;
+<<<<<<< HEAD
             if (pktLenWords)
             {
                 ffdcPkt.ffdcData = new uint32_t[pktLenWords];
@@ -182,6 +183,14 @@ void SbeFFDC::parse(int fd)
                 log<level::ERR>("FFDC packet size is zero skipping");
                 return;
             }
+=======
+
+            ffdcPkt.ffdcData = new uint32_t[pktLenWords];
+            memcpy(ffdcPkt.ffdcData,
+                   ((reinterpret_cast<uint32_t*>(ffdc)) + p10FfdcSkipWords),
+                   (pktLenWords * sizeof(uint32_t)));
+            ++pktCount; //only for p10 ffdc
+>>>>>>> 21d11c2 (PEL: fix max packets that can be received for ody ocmb)
         }
         else if (magicBytes == pozFfdcMagicCode)
         {
