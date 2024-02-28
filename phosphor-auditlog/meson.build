@@ -1,5 +1,5 @@
 auditd_dep = dependency('audit')
-ausparse_dep = dependency('auparse', required: true)
+auparse_dep = dependency('auparse', required: true)
 
 auditlog_sources = [
         files(
@@ -28,7 +28,7 @@ executable('phosphor-auditlog',
         sdbusplus_dep,
         sdeventplus_dep,
         auditd_dep,
-        ausparse_dep,
+        auparse_dep,
     ],
     install: true,
 )
