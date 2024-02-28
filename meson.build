@@ -115,7 +115,9 @@ log_manager_ext_args = []
 
 subdir('extensions')
 subdir('phosphor-rsyslog-config')
-subdir('phosphor-auditlog')
+if(get_option('auditlog').enabled())
+    subdir('phosphor-auditlog')
+endif
 
 # Generate daemon.
 log_manager_sources = [
