@@ -3,17 +3,26 @@ systemd_system_unit_dir = dependency('systemd').get_variable(
 
 install_data(
     ['xyz.openbmc_project.Logging.service',
-     'xyz.openbmc_project.Syslog.Config.service',
-     'xyz.openbmc_project.Logging.AuditLog.service'],
+     'xyz.openbmc_project.Syslog.Config.service'],
     install_dir: systemd_system_unit_dir,
 )
 
 install_data(
     'busconfig/phosphor-logging.conf',
     'busconfig/phosphor-rsyslog-config.conf',
-    'busconfig/phosphor-auditlog-config.conf',
     install_dir: get_option('datadir') / 'dbus-1' / 'system.d',
 )
+
+if(get_option('auditlog').enabled())
+    install_data(
+        'xyz.openbmc_project.Logging.AuditLog.service',
+        install_dir: systemd_system_unit_dir,
+    )
+    install_data(
+        'busconfig/phosphor-auditlog-config.conf',
+        install_dir: get_option('datadir') / 'dbus-1' / 'system.d',
+    )
+endif
 
 dbus_system_bus_services_dir = dependency('dbus-1').get_variable(
     'system_bus_services_dir',
