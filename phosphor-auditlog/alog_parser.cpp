@@ -117,7 +117,7 @@ inline std::string_view getValue(std::string_view fieldText)
     return fieldText;
 }
 
-void ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
+bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
 {
     parsedEntry["MessageId"] = "OpenBMC.0.5.AuditLogUsysConfig";
 
@@ -158,6 +158,19 @@ void ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
         mapEntry = msgArgMap.find(fieldName);
         if (mapEntry != msgArgMap.end())
         {
+            if (messageArgs[mapEntry->second] != nullptr)
+            {
+                /* Field is being repeated. This is a sign of corruption of the
+                 * raw audit log entry. Warn about this and skip it.
+                 */
+                lg2::warning(
+                    "Skipping entry with repeated field:{FIELDNAME} for ID:{ID}",
+                    "FIELDNAME", fieldName, "ID", parsedEntry.value("ID", ""));
+                auto recMsg = auparse_get_record_text(au);
+                lg2::debug("{RECTEXT}", "RECTEXT", recMsg);
+                return false;
+            }
+
             /* Remove '"' from fieldTxt */
             messageArgs[mapEntry->second] = getValue(fieldTxt);
             nFields++;
@@ -165,7 +178,7 @@ void ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
             lg2::debug(
                 "Field {NFIELD} : {FIELDNAME} = {FIELDSTR} argIdx = {ARGIDX}",
                 "NFIELD", fieldIdx, "FIELDNAME", fieldName, "FIELDSTR",
-                fieldTxt.c_str(), "ARGIDX", mapEntry->second);
+                fieldTxt, "ARGIDX", mapEntry->second);
 #endif // AUDITLOG_FULL_DEBUG
         }
     } while (auparse_next_field(au) == 1);
@@ -201,6 +214,8 @@ void ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
     }
 
     parsedEntry["MessageArgs"] = std::move(messageArgs);
+
+    return true;
 }
 
 bool ALParser::formatMsgReg(nlohmann::json& parsedEntry)
@@ -223,7 +238,10 @@ bool ALParser::formatMsgReg(nlohmann::json& parsedEntry)
     switch (recType)
     {
         case AUDIT_USYS_CONFIG:
-            fillUsysEntry(parsedEntry);
+            if (!fillUsysEntry(parsedEntry))
+            {
+                return false;
+            }
             break;
 
         default:
