@@ -119,25 +119,22 @@ inline std::string_view getValue(std::string_view fieldText)
 
 bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
 {
-    parsedEntry["MessageId"] = "OpenBMC.0.5.AuditLogUsysConfig";
-
-    nlohmann::json messageArgs = nlohmann::json::array();
-
-    /* Map expected fields to MessageArgs index.
+    /* Map audit fields to JSON name
      * Audit records contain fields not returned for admin use. E.g. the pid of
      * the auditd daemon that recorded the entry is part of the record.
      */
-    std::map<std::string, int>::const_iterator mapEntry;
-    const std::map<std::string, int> msgArgMap({{"type", 0},
-                                                {"op", 1},
-                                                {"acct", 2},
-                                                {"exe", 3},
-                                                {"hostname", 4},
-                                                {"addr", 5},
-                                                {"terminal", 6},
-                                                {"res", 7}});
+    std::map<std::string, std::string>::const_iterator mapEntry;
+    const std::map<std::string, std::string> msgArgMap(
+        {{"type", "Type"},
+         {"op", "Operation"},
+         {"acct", "Account"},
+         {"exe", "Executable"},
+         {"hostname", "Hostname"},
+         {"addr", "IPAddress"},
+         {"terminal", "Terminal"},
+         {"res", "Result"}});
 
-    /* Walk the fields and insert mapped fields into messageArgs */
+    /* Walk the fields and insert mapped fields into parsedEntry */
     int fieldIdx = 0;
     size_t nFields = 0; // Used to confirm all expected fields found
     do
@@ -154,11 +151,11 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
             continue;
         }
 
-        /* Map the field to the message arg, not all fields are args */
+        /* Map the field to the JSON name, not all fields are mapped */
         mapEntry = msgArgMap.find(fieldName);
         if (mapEntry != msgArgMap.end())
         {
-            if (messageArgs[mapEntry->second] != nullptr)
+            if (parsedEntry[mapEntry->second] != nullptr)
             {
                 /* Field is being repeated. This is a sign of corruption of the
                  * raw audit log entry. Warn about this and skip it.
@@ -172,7 +169,7 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
             }
 
             /* Remove '"' from fieldTxt */
-            messageArgs[mapEntry->second] = getValue(fieldTxt);
+            parsedEntry[mapEntry->second] = getValue(fieldTxt);
             nFields++;
 #ifdef AUDITLOG_FULL_DEBUG
             lg2::debug(
@@ -193,17 +190,14 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
 #endif // AUDITLOG_FULL_DEBUG
 
         // Set missing fields to empty string
-        size_t argIdx;
-        for (argIdx = 0;
-             (nFields != msgArgMap.size()) && (argIdx < msgArgMap.size());
-             argIdx++)
+        for (const auto& [key, name] : msgArgMap)
         {
-            if (messageArgs[argIdx] == nullptr)
+            if (parsedEntry[name] == nullptr)
             {
 #ifdef AUDITLOG_FULL_DEBUG
-                lg2::debug("Correcting arg={ARGIDX}", "ARGIDX", argIdx);
+                lg2::debug("Missing {NAME} initialized", "NAME", name);
 #endif // AUDITLOG_FULL_DEBUG
-                messageArgs[argIdx] = "";
+                parsedEntry[name] = "";
                 nFields++;
             }
         }
@@ -212,8 +206,6 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
         lg2::debug("nFields = {NFIELDS}", "NFIELDS", nFields);
 #endif // AUDITLOG_FULL_DEBUG
     }
-
-    parsedEntry["MessageArgs"] = std::move(messageArgs);
 
     return true;
 }
