@@ -143,9 +143,9 @@ void PLDMInterface::freeIID()
 
     if (rc == -EINVAL)
     {
-        throw std::runtime_error("Instance ID " + std::to_string(*_instanceID) +
-                                 " for TID " + std::to_string(_eid) +
-                                 " was not previously allocated");
+        throw std::runtime_error(
+            "Instance ID " + std::to_string(*_instanceID) + " for TID " +
+            std::to_string(_eid) + " was not previously allocated");
     }
     else if (rc)
     {
