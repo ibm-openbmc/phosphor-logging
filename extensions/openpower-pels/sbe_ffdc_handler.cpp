@@ -250,18 +250,6 @@ void SbeFFDC::process(const sbeFfdcPacketType& ffdcPkt)
     // formated FFDC data structure after FFDC packet processing
     FFDC ffdc;
 
-    if (!pdbg_targets_init(NULL))
-    {
-        log<level::ERR>("pdbg_targets_init failed, skipping ffdc processing");
-        return;
-    }
-
-    if (libekb_init())
-    {
-        log<level::ERR>("libekb_init failed, skipping ffdc processing");
-        return;
-    }
-
     try
     {
         // libekb provided wrapper function to convert SBE FFDC
