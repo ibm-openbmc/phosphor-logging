@@ -2,7 +2,6 @@
 
 #include "data_interface.hpp"
 
-#include <libpldm/transport.h>
 #include <stdint.h>
 
 #include <phosphor-logging/lg2.hpp>
@@ -196,10 +195,9 @@ class HostInterface
      *                 invoked from.
      * @param[in] fd - The file descriptor being used
      * @param[in] revents - The event status bits
-     * @param[in] transport - The transport data pointer
      */
-    virtual void receive(sdeventplus::source::IO& io, int fd, uint32_t revents,
-                         pldm_transport* transport) = 0;
+    virtual void receive(sdeventplus::source::IO& io, int fd,
+                         uint32_t revents) = 0;
 
     /**
      * @brief An optional function to call on a successful command response.
