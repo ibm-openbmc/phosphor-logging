@@ -508,13 +508,11 @@ class DataInterfaceBase
      *
      * @param[in] locCode - The location code of the FRU
      *
-     * @return std::expected<bool, std::string>
-     *       - Returns bool value if FRU type is able to determine successfully.
-     *              - true , if the given locCode is DIMM
-     *              - false, if the given locCode is not a DIMM
-     *       - Returns an error message in string format if an error occurs.
+     * @return - true, if the given location code is DIMM
+     *         - false, if the given location code is not DIMM or if it fails to
+     *         determine the FRU type.
      */
-    std::expected<bool, std::string> isDIMM(const std::string& locCode);
+    bool isDIMM(const std::string& locCode);
 
     /**
      * @brief Check whether the given location code present in the cache
@@ -1004,6 +1002,37 @@ class DataInterface : public DataInterfaceBase
     static std::string addLocationCodePrefix(const std::string& locationCode);
 
     /**
+     * @brief A helper API to check whether the PHAL device tree is exists,
+     *        ensuring the PHAL init API can be invoked.
+     *
+     * @return true if the PHAL device tree is exists, otherwise false
+     */
+    bool isPHALDevTreeExist() const;
+
+#ifdef PEL_ENABLE_PHAL
+    /**
+     * @brief A helper API to init PHAL libraries
+     *
+     * @return None
+     */
+    void initPHAL();
+#endif // PEL_ENABLE_PHAL
+
+    /**
+     * @brief A helper API to subscribe to systemd signals
+     *
+     * @return None
+     */
+    void subscribeToSystemdSignals();
+
+    /**
+     * @brief A helper API to unsubscribe to systemd signals
+     *
+     * @return None
+     */
+    void unsubscribeFromSystemdSignals();
+
+    /**
      * @brief The D-Bus property or interface watchers that have callbacks
      *        registered that will set members in this class when
      *        they change.
@@ -1024,6 +1053,17 @@ class DataInterface : public DataInterfaceBase
      * @brief The sdbusplus bus object for making D-Bus calls.
      */
     sdbusplus::bus_t& _bus;
+
+    /**
+     * @brief Watcher to check "openpower-update-bios-attr-table" service
+     *        is "done" to init PHAL libraires
+     */
+    std::unique_ptr<sdbusplus::bus::match_t> _systemdMatch;
+
+    /**
+     * @brief A slot object for async dbus call
+     */
+    sdbusplus::slot_t _systemdSlot;
 };
 
 } // namespace pels

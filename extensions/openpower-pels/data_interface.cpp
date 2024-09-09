@@ -23,10 +23,13 @@
 #include <xyz/openbmc_project/State/BMC/server.hpp>
 #include <xyz/openbmc_project/State/Boot/Progress/server.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <iterator>
 
 #ifdef PEL_ENABLE_PHAL
+#include <libekb.H>
+#include <libpdbg.h>
 #include <libphal.H>
 #endif
 
@@ -51,6 +54,7 @@ constexpr auto biosConfigMgr = "xyz.openbmc_project.BIOSConfigManager";
 constexpr auto bootRawProgress = "xyz.openbmc_project.State.Boot.Raw";
 constexpr auto pldm = "xyz.openbmc_project.PLDM";
 constexpr auto inventoryManager = "xyz.openbmc_project.Inventory.Manager";
+constexpr auto systemd = "org.freedesktop.systemd1";
 } // namespace service_name
 
 namespace object_path
@@ -72,6 +76,7 @@ constexpr auto logSetting = "/xyz/openbmc_project/logging/settings";
 constexpr auto hwIsolation = "/xyz/openbmc_project/hardware_isolation";
 constexpr auto biosConfigMgr = "/xyz/openbmc_project/bios_config/manager";
 constexpr auto bootRawProgress = "/xyz/openbmc_project/state/boot/raw0";
+constexpr auto systemd = "/org/freedesktop/systemd1";
 } // namespace object_path
 
 namespace interface
@@ -110,6 +115,7 @@ constexpr auto invFan = "xyz.openbmc_project.Inventory.Item.Fan";
 constexpr auto invPowerSupply =
     "xyz.openbmc_project.Inventory.Item.PowerSupply";
 constexpr auto inventoryManager = "xyz.openbmc_project.Inventory.Manager";
+constexpr auto systemdMgr = "org.freedesktop.systemd1.Manager";
 } // namespace interface
 
 using namespace sdbusplus::xyz::openbmc_project::State::Boot::server;
@@ -118,6 +124,8 @@ namespace match_rules = sdbusplus::bus::match::rules;
 
 const DBusInterfaceList hotplugInterfaces{interface::invFan,
                                           interface::invPowerSupply};
+static constexpr auto PDBG_DTB_PATH =
+    "/var/lib/phosphor-software-manager/hostfw/running/DEVTREE";
 
 std::pair<std::string, std::string>
     DataInterfaceBase::extractConnectorFromLocCode(
@@ -136,7 +144,8 @@ std::pair<std::string, std::string>
     return {base, connector};
 }
 
-DataInterface::DataInterface(sdbusplus::bus_t& bus) : _bus(bus)
+DataInterface::DataInterface(sdbusplus::bus_t& bus) :
+    _bus(bus), _systemdSlot(nullptr)
 {
     readBMCFWVersion();
     readServerFWVersion();
@@ -230,6 +239,19 @@ DataInterface::DataInterface(sdbusplus::bus_t& bus) : _bus(bus)
             }
         }
     }));
+
+    if (isPHALDevTreeExist())
+    {
+#ifdef PEL_ENABLE_PHAL
+        initPHAL();
+#endif
+    }
+    else
+    {
+        // Watch the "openpower-update-bios-attr-table" service to init
+        // PHAL libraries
+        subscribeToSystemdSignals();
+    }
 }
 
 DBusPropertyMap
@@ -938,8 +960,7 @@ void DataInterfaceBase::addDIMMLocCode(const std::string& locCode,
     _locationCache.insert({locCode, isFRUDIMM});
 }
 
-std::expected<bool, std::string>
-    DataInterfaceBase::isDIMM(const std::string& locCode)
+bool DataInterfaceBase::isDIMM(const std::string& locCode)
 {
     auto isDIMMType = isDIMMLocCode(locCode);
     if (isDIMMType.has_value())
@@ -947,45 +968,22 @@ std::expected<bool, std::string>
         return isDIMMType.value();
     }
 #ifndef PEL_ENABLE_PHAL
-    return std::unexpected<std::string>(
-        std::format("PHAL feature is not enabled, so the LocationCode:[{}] "
-                    "cannot be determined as DIMM",
-                    locCode));
+    return false;
 #else
     else
     {
         // Invoke pHAL API inorder to fetch the FRU Type
         auto fruType = openpower::phal::pdbg::getFRUType(locCode);
+        bool isDIMMFRU{false};
         if (fruType.has_value())
         {
-            bool isDIMMFRU{false};
             if (fruType.value() == ENUM_ATTR_TYPE_DIMM)
             {
                 isDIMMFRU = true;
             }
             addDIMMLocCode(locCode, isDIMMFRU);
-            return isDIMMFRU;
         }
-        else
-        {
-            std::string msg{std::format("Failed to determine the HW Type, "
-                                        "LocationCode:[{}]",
-                                        locCode)};
-            if (openpower::phal::exception::errMsgMap.contains(fruType.error()))
-            {
-                msg = std::format(
-                    "{} PHALErrorMsg:[{}]", msg,
-                    openpower::phal::exception::errMsgMap.at(fruType.error()));
-            }
-            else
-            {
-                msg = std::format(
-                    "{} PHALErrorMsg:[Unknown PHALErrorCode:{}]", msg,
-                    std::to_underlying<openpower::phal::exception::ERR_TYPE>(
-                        fruType.error()));
-            }
-            return std::unexpected<std::string>(msg);
-        }
+        return isDIMMFRU;
     }
 #endif
 }
@@ -1114,5 +1112,138 @@ void DataInterface::notifyPresenceSubsribers(const std::string& path,
     // Tell the subscribers.
     setFruPresent(locCode);
 }
+
+bool DataInterface::isPHALDevTreeExist() const
+{
+    try
+    {
+        if (std::filesystem::exists(PDBG_DTB_PATH))
+        {
+            return true;
+        }
+    }
+    catch (const std::exception& e)
+    {
+        lg2::error("Failed to check device tree {PHAL_DEVTREE_PATH} existence, "
+                   "{ERROR}",
+                   "PHAL_DEVTREE_PATH", PDBG_DTB_PATH, "ERROR", e);
+    }
+    return false;
+}
+
+#ifdef PEL_ENABLE_PHAL
+void DataInterface::initPHAL()
+{
+    if (setenv("PDBG_DTB", PDBG_DTB_PATH, 1))
+    {
+        // Log message and continue,
+        // This is to help continue creating PEL in raw format.
+        lg2::error("Failed to set PDBG_DTB: ({ERRNO})", "ERRNO",
+                   strerror(errno));
+    }
+
+    if (!pdbg_targets_init(NULL))
+    {
+        lg2::error("pdbg_targets_init failed");
+        return;
+    }
+
+    if (libekb_init())
+    {
+        lg2::error("libekb_init failed, skipping ffdc processing");
+        return;
+    }
+}
+#endif
+
+void DataInterface::subscribeToSystemdSignals()
+{
+    try
+    {
+        auto method = _bus.new_method_call(service_name::systemd,
+                                           object_path::systemd,
+                                           interface::systemdMgr, "Subscribe");
+        _systemdSlot = method.call_async([this](sdbusplus::message_t&& msg) {
+            // Initializing with nullptr to indicate that it is not subscribed
+            // to any signal.
+            this->_systemdSlot = sdbusplus::slot_t(nullptr);
+            if (msg.is_method_error())
+            {
+                auto* error = msg.get_error();
+                lg2::error("Failed to subscribe JobRemoved systemd signal, "
+                           "errorName: {ERR_NAME}, errorMsg: {ERR_MSG}, ",
+                           "ERR_NAME", error->name, "ERR_MSG", error->message);
+                return;
+            }
+
+            namespace sdbusRule = sdbusplus::bus::match::rules;
+            this->_systemdMatch =
+                std::make_unique<decltype(this->_systemdMatch)::element_type>(
+                    this->_bus,
+                    sdbusRule::type::signal() +
+                        sdbusRule::member("JobRemoved") +
+                        sdbusRule::path(object_path::systemd) +
+                        sdbusRule::interface(interface::systemdMgr),
+                    [this](sdbusplus::message_t& msg) {
+                uint32_t jobID;
+                sdbusplus::message::object_path jobObjPath;
+                std::string jobUnitName, jobUnitResult;
+
+                msg.read(jobID, jobObjPath, jobUnitName, jobUnitResult);
+                if ((jobUnitName ==
+                     "openpower-update-bios-attr-table.service") &&
+                    (jobUnitResult == "done"))
+                {
+                    // Unsubscribe immediately after the signal is
+                    // received to avoid unwanted signal
+                    // reception. And initialize PHAL once the
+                    // unsubscription is success.
+                    this->unsubscribeFromSystemdSignals();
+                }
+            });
+        });
+    }
+    catch (const sdbusplus::exception_t& e)
+    {
+        lg2::error(
+            "Exception occured while handling JobRemoved systemd signal, "
+            "exception: {ERROR}",
+            "ERROR", e);
+    }
+}
+
+void DataInterface::unsubscribeFromSystemdSignals()
+{
+    try
+    {
+        auto method =
+            _bus.new_method_call(service_name::systemd, object_path::systemd,
+                                 interface::systemdMgr, "Unsubscribe");
+        _systemdSlot = method.call_async([this](sdbusplus::message_t&& msg) {
+            // Unsubscribing the _systemdSlot from the subscribed signal
+            this->_systemdSlot = sdbusplus::slot_t(nullptr);
+            if (msg.is_method_error())
+            {
+                auto* error = msg.get_error();
+                lg2::error(
+                    "Failed to unsubscribe from JobRemoved systemd signal, "
+                    "errorName: {ERR_NAME}, errorMsg: {ERR_MSG}, ",
+                    "ERR_NAME", error->name, "ERR_MSG", error->message);
+                return;
+            }
+#ifdef PEL_ENABLE_PHAL
+            this->initPHAL();
+#endif
+        });
+    }
+    catch (const sdbusplus::exception_t& e)
+    {
+        lg2::error(
+            "Exception occured while unsubscribing from JobRemoved systemd signal, "
+            "exception: {ERROR}",
+            "ERROR", e);
+    }
+}
+
 } // namespace pels
 } // namespace openpower
