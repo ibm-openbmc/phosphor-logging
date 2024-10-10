@@ -220,9 +220,9 @@ bool ALParser::formatMsgReg(nlohmann::json& parsedEntry)
         throw sdbusplus::xyz::openbmc_project::Common::Error::InternalFailure();
     }
     parsedEntry["EventTimestamp"] = fullTimestamp->sec;
-    parsedEntry["ID"] = std::format("{}.{}:{}", fullTimestamp->sec,
-                                    fullTimestamp->milli,
-                                    fullTimestamp->serial);
+    parsedEntry["ID"] =
+        std::format("{}.{}:{}", fullTimestamp->sec, fullTimestamp->milli,
+                    fullTimestamp->serial);
 
     /* Fill varied args fields based on record type */
     int recType = auparse_get_type(au);
@@ -259,9 +259,9 @@ bool ALParser::formatGeneral(nlohmann::json& parsedEntry)
         throw sdbusplus::xyz::openbmc_project::Common::Error::InternalFailure();
     }
     parsedEntry["EventTimestamp"] = fullTimestamp->sec;
-    parsedEntry["ID"] = std::format("{}.{}:{}", fullTimestamp->sec,
-                                    fullTimestamp->milli,
-                                    fullTimestamp->serial);
+    parsedEntry["ID"] =
+        std::format("{}.{}:{}", fullTimestamp->sec, fullTimestamp->milli,
+                    fullTimestamp->serial);
 
     auto recMsg = auparse_get_record_text(au);
     parsedEntry["Event"] = recMsg;
