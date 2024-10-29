@@ -41,7 +41,7 @@ class ALManager : public ALObject
      *  @param[in] path - Path to attach at.
      */
     ALManager(sdbusplus::bus_t& bus, const std::string& path) :
-        ALObject(bus, path.c_str()){};
+        ALObject(bus, path.c_str()) {};
 
     /**
      * @brief Parses all audit log events into JSON format.
