@@ -36,8 +36,8 @@ class ALParseFile
      */
     ALParseFile()
     {
-        std::string tempFile = std::filesystem::temp_directory_path() /
-                               "auditLogJson-XXXXXX";
+        std::string tempFile =
+            std::filesystem::temp_directory_path() / "auditLogJson-XXXXXX";
 
         lg2::debug("Constructing ALParseFile template={NAME}", "NAME",
                    tempFile);
