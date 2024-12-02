@@ -4314,6 +4314,64 @@
         },
 
         {
+            "Name": "xyz.openbmc_project.Fan.Error.Malfunction",
+            "Subsystem": "power_fans",
+            "ComponentID": "0x2800",
+            "Severity": "unrecoverable",
+            "ActionFlags": ["service_action", "report", "call_home"],
+
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x76F5",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "System": "com.ibm.Hardware.Chassis.Model.Rainier",
+                    "CalloutList": [{ "Priority": "high", "LocCode": "P0" }]
+                },
+                {
+                    "System": "com.ibm.Hardware.Chassis.Model.Bonnell",
+                    "CalloutList": [{ "Priority": "high", "LocCode": "P0" }]
+                }
+            ],
+
+            "Documentation": {
+                "Description": "The fan control device malfunctioned",
+                "Message": "The fan control device malfunctioned",
+                "Notes": [
+                    "The fan control device is showing unrealistic fan speeds.",
+                    "The fan control FRU is called out high, and the fan will",
+                    "be called out low."
+                ]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Fan.Error.CtlrReset",
+            "ComponentID": "0x2800",
+            "Subsystem": "power_fans",
+            "Severity": "non_error",
+            "ActionFlags": ["report"],
+
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x76F6",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "The fan controller device was reset",
+                "Message": "The fan controller device was reset",
+                "Notes": [
+                    "The fan control device was reset in an attempt to ",
+                    "recover from a malfunction."
+                ]
+            }
+        },
+
+        {
             "Name": "xyz.openbmc_project.Sensor.Threshold.Error.TemperaturePerformanceLossHigh",
             "Subsystem": "power",
             "ComponentID": "0x2800",
