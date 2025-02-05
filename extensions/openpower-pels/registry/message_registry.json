@@ -4875,6 +4875,41 @@
         },
 
         {
+            "Name": "com.ibm.VPD.Error.DefaultError",
+            "Subsystem": "cec_vpd",
+
+            "SRC": {
+                "ReasonCode": "0x4000",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC0001" }
+                    ]
+                }
+            ],
+
+            "Documentation": {
+                "Description": "This entry is used when no other matching VPD error is found",
+                "Message": "Unknown VPD error occurred. (Original event not in message registry)",
+                "Notes": [
+                    "This is used when actual cause of the VPD falure is unknown.",
+                    "This error may contain callouts if the creator passed ",
+                    "them in.",
+                    "The severity is set by the creator.",
+                    "If this error is seen, then a VPD code change needs to be ",
+                    "made to log the specific error type related to the issue."
+                ]
+            },
+
+            "JournalCapture": {
+                "NumLines": 30
+            }
+        },
+
+        {
             "Name": "com.ibm.VPD.Error.InvalidEepromPath",
             "Subsystem": "cec_vpd",
             "ComponentID": "0x4000",
