@@ -195,10 +195,10 @@ void Manager::_commit(uint64_t transactionId [[maybe_unused]],
     createEntry(errMsg, errLvl, additionalData);
 }
 
-auto Manager::createEntry(
-    std::string errMsg, Entry::Level errLvl,
-    std::vector<std::string> additionalData,
-    const FFDCEntries& ffdc) -> sdbusplus::message::object_path
+auto Manager::createEntry(std::string errMsg, Entry::Level errLvl,
+                          std::vector<std::string> additionalData,
+                          const FFDCEntries& ffdc)
+    -> sdbusplus::message::object_path
 {
     if (!Extensions::disableDefaultLogCaps())
     {
