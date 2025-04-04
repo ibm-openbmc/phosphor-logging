@@ -9,6 +9,13 @@ option(
 
 option('yamldir', type: 'string', description: 'Path to YAML')
 option(
+    'auditlog',
+    type: 'feature',
+    value: 'disabled',
+    description: 'Enable D-Bus Audit Log service',
+)
+
+option(
     'callout_yaml',
     type: 'string',
     value: 'callouts/callouts-example.yaml',
