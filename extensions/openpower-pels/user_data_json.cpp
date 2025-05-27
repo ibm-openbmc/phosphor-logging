@@ -331,6 +331,13 @@ std::optional<std::string> getPythonJSON(uint16_t componentID, uint8_t subType,
             {
                 std::unique_ptr<PyObject, decltype(&pyDecRef)> resPtr(
                     pResult, &pyDecRef);
+
+                if (pResult == Py_None)
+                {
+                    // Just return a nullopt so it will hexdump the section
+                    return std::nullopt;
+                }
+
                 PyObject* pBytes = PyUnicode_AsEncodedString(pResult, "utf-8",
                                                              "~E~");
                 std::unique_ptr<PyObject, decltype(&pyDecRef)> pyBytePtr(
