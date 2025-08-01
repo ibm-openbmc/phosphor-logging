@@ -27,3 +27,17 @@ executable(
     ],
     install: true,
 )
+
+auditlog_plugin_sources = [files('main_plugin.cpp')]
+
+executable(
+    'phosphor-auditlog-plugin',
+    auditlog_plugin_sources,
+    dependencies: [phosphor_logging_dep],
+    install: true,
+)
+
+install_data(
+    'auditlog.conf',
+    install_dir: get_option('sysconfdir') / 'audit/plugins.d',
+)
