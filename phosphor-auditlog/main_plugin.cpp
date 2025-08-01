@@ -4,10 +4,28 @@
 
 #include <phosphor-logging/lg2.hpp>
 
-static void handleEvent(auparse_state_t* /*au*/,
-                        auparse_cb_event_t /*eventType*/, void* /*data*/)
+static void handleEvent(auparse_state_t* au, auparse_cb_event_t eventType,
+                        void* /*data*/)
 {
-    lg2::info("Handling audit event");
+    if (eventType != AUPARSE_CB_EVENT_READY)
+    {
+        return;
+    }
+
+    auparse_first_record(au);
+
+    do
+    {
+        auto type = auparse_get_type(au);
+
+        // Handle events of type INTEGRITY
+        if ((type >= AUDIT_INTEGRITY_FIRST_MSG) &&
+            (type <= AUDIT_INTEGRITY_LAST_MSG))
+        {
+            lg2::info("Handling Integrity event: {RECORD}", "RECORD",
+                      auparse_get_record_text(au));
+        }
+    } while (auparse_next_record(au) > 0);
 }
 
 int main(int /*argc*/, char* /*argv*/[])
