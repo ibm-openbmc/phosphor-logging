@@ -42,6 +42,8 @@ auditlog_plugin_sources = [
 executable('phosphor-auditlog-plugin',
     auditlog_plugin_sources,
     dependencies: [
+        auditd_dep,
+        auparse_dep,
         phosphor_logging_dep,
     ],
     install: true,
