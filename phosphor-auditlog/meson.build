@@ -33,7 +33,7 @@ auditlog_plugin_sources = [files('main_plugin.cpp')]
 executable(
     'phosphor-auditlog-plugin',
     auditlog_plugin_sources,
-    dependencies: [phosphor_logging_dep],
+    dependencies: [auditd_dep, auparse_dep, phosphor_logging_dep],
     install: true,
 )
 
