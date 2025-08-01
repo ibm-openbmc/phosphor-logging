@@ -3,6 +3,9 @@
 #include <unistd.h>
 
 #include <phosphor-logging/lg2.hpp>
+#include <sdbusplus/exception.hpp>
+#include <sdbusplus/server.hpp>
+#include <xyz/openbmc_project/Logging/Create/server.hpp>
 
 static void handleEvent(auparse_state_t* au, auparse_cb_event_t eventType,
                         void* /*data*/)
@@ -22,8 +25,28 @@ static void handleEvent(auparse_state_t* au, auparse_cb_event_t eventType,
         if ((type >= AUDIT_INTEGRITY_FIRST_MSG) &&
             (type <= AUDIT_INTEGRITY_LAST_MSG))
         {
-            lg2::info("Handling Integrity event: {RECORD}", "RECORD",
-                      auparse_get_record_text(au));
+            // Create informational log
+            using Create =
+                sdbusplus::server::xyz::openbmc_project::logging::Create;
+            constexpr auto logSeverity =
+                "xyz.openbmc_project.Logging.Entry.Level.Informational";
+            constexpr auto logMessage =
+                "xyz.openbmc_project.Software.Version.Info.IntegrityEvent";
+            try
+            {
+                auto bus = sdbusplus::bus::new_default();
+                auto method = bus.new_method_call(Create::default_service,
+                                                  Create::instance_path,
+                                                  Create::interface, "Create");
+                std::map<std::string, std::string> additionalData;
+                additionalData["RECORD"] = auparse_get_record_text(au);
+                method.append(logMessage, logSeverity, additionalData);
+                bus.call_noreply(method);
+            }
+            catch (const sdbusplus::exception_t& e)
+            {
+                lg2::error("Error creating log: {ERROR}", "ERROR", e);
+            }
         }
     } while (auparse_next_record(au) > 0);
 }
