@@ -5743,6 +5743,25 @@
         },
 
         {
+            "Name": "com.ibm.Info.LedTool",
+            "Subsystem": "cec_vpd",
+            "ComponentID": "0x4000",
+            "Severity": "non_error",
+            "SRC": {
+                "ReasonCode": "0x400E",
+                "Words6To9": {}
+            },
+            "Documentation": {
+                "Description": "LED tool access.",
+                "Message": "LED tool is used.",
+                "Notes": [
+                    "This informational error is logged each time when LED",
+                    "tool is used."
+                ]
+            }
+        },
+
+        {
             "Name": "com.ibm.Panel.Error.InputDevPathFailure",
             "Subsystem": "cec_op_panel",
             "ComponentID": "0x5000",
