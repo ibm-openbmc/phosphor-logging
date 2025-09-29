@@ -121,11 +121,12 @@ class ALParser
     void fillAuditEntry(nlohmann::json& parsedEntry);
 
     /**
-     * @brief Parses AUDIT_USYS_CONFIG audit entry into JSON format
+     * @brief Parses known audit entries into JSON format
      * @details Expected fields from audit log entry are split into MessageArgs
+     *          USYS_CONFIG and AUDIT_USER_LOGIN records are parsed.
      * @return bool True entry was filled in, false otherwise.
      */
-    bool fillUsysEntry(nlohmann::json& parsedEntry);
+    bool fillMsgArgs(nlohmann::json& parsedEntry);
 
     /**
      * @brief Opens and truncates specified file

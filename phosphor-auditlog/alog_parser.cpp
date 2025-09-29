@@ -99,7 +99,7 @@ void ALParser::fillAuditEntry(nlohmann::json& parsedEntry)
     parsedEntry["MessageArgs"] = std::move(messageArgs);
 }
 
-bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
+bool ALParser::fillMsgArgs(nlohmann::json& parsedEntry)
 {
     /* Map audit fields to JSON name
      * Audit records contain fields not returned for admin use. E.g. the pid of
@@ -162,6 +162,24 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
         }
     } while (auparse_next_field(au) == 1);
 
+    if ((nFields != msgArgMap.size()) && (parsedEntry["Account"] == nullptr))
+    {
+        /* If the username is unknown the Account could be represented by
+         * "id" instead of "acct" in the audit record. Check for it.
+         */
+        auparse_first_field(au);
+        if (auparse_find_field(au, "id"))
+        {
+            // Interpret the id to get the name and strip quotes
+            parsedEntry["Account"] = auparse_interpret_field(au);
+            nFields++;
+#ifdef AUDITLOG_FULL_DEBUG
+            lg2::debug("Field special case : id = {FIELDSTR} argIdx = Account",
+                       "FIELDSTR", auparse_get_field_str(au));
+#endif // AUDITLOG_FULL_DEBUG
+        }
+    }
+
     /* Error handling, make sure all the fields we care about
      * exist. If any are missing set to null string.
      */
@@ -212,7 +230,8 @@ bool ALParser::formatMsgReg(nlohmann::json& parsedEntry)
     switch (recType)
     {
         case AUDIT_USYS_CONFIG:
-            if (!fillUsysEntry(parsedEntry))
+        case AUDIT_USER_LOGIN:
+            if (!fillMsgArgs(parsedEntry))
             {
                 return false;
             }
