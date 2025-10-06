@@ -1139,8 +1139,7 @@ void DataInterface::subscribeToSystemdSignals()
                         std::string jobUnitName, jobUnitResult;
 
                         msg.read(jobID, jobObjPath, jobUnitName, jobUnitResult);
-                        if ((jobUnitName ==
-                             "openpower-update-bios-attr-table.service") &&
+                        if ((jobUnitName == "obmc-recover-pnor.service") &&
                             (jobUnitResult == "done"))
                         {
 #ifdef PEL_ENABLE_PHAL
