@@ -99,24 +99,6 @@ void ALParser::fillAuditEntry(nlohmann::json& parsedEntry)
     parsedEntry["MessageArgs"] = std::move(messageArgs);
 }
 
-/**
- * @brief Strips '"' from beginning and end of value field
- */
-inline std::string_view getValue(std::string_view fieldText)
-{
-    if (fieldText.starts_with('\"'))
-    {
-        auto endQuote = fieldText.find('\"', 1);
-
-        if (endQuote != std::string::npos)
-        {
-            return fieldText.substr(1, endQuote - 1);
-        }
-    }
-
-    return fieldText;
-}
-
 bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
 {
     /* Map audit fields to JSON name
@@ -168,8 +150,8 @@ bool ALParser::fillUsysEntry(nlohmann::json& parsedEntry)
                 return false;
             }
 
-            /* Remove '"' from fieldTxt */
-            parsedEntry[mapEntry->second] = getValue(fieldTxt);
+            // Strips quotes and interprets ids
+            parsedEntry[mapEntry->second] = auparse_interpret_field(au);
             nFields++;
 #ifdef AUDITLOG_FULL_DEBUG
             lg2::debug(
