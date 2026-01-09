@@ -6942,6 +6942,54 @@
                     }
                 ]
             }
+        },
+        {
+            "Name": "xyz.openbmc_project.acfshell.ShellStarted",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0xF500",
+
+            "SRC": {
+                "ReasonCode": "0xF501",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "Acf script started running in the shell",
+                "Message": "Acf script started running in the shell",
+                "Notes": ["The journal should contain more information"]
+            }
+        },
+        {
+            "Name": "xyz.openbmc_project.acfshell.Completed",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0xF500",
+
+            "SRC": {
+                "ReasonCode": "0xF502",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "Acf script ended running in the shell",
+                "Message": "Acf script ended running in the shell",
+                "Notes": ["The journal should contain more information"]
+            }
+        },
+        {
+            "Name": "xyz.openbmc_project.acfshell.Cancelled",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0xF500",
+
+            "SRC": {
+                "ReasonCode": "0xF503",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "Acf script cancelled",
+                "Message": "Acf script ended running in the shell",
+                "Notes": ["The journal should contain more information"]
+            }
         }
     ]
 }
