@@ -3905,6 +3905,190 @@
         },
 
         {
+            "Name": "xyz.openbmc_project.Power.ChassisPowerMissing",
+            "Subsystem": "input_power_source",
+            "ActionFlags": ["service_action", "report", "call_home"],
+            "ComponentID": "0x2700",
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x74F0",
+                "Words6To9": {}
+            },
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        {
+                            "Priority": "high",
+                            "Procedure": "BMC0009"
+                        }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "Chassis input power is missing",
+                "Message": "Chassis input power is missing",
+                "Notes": [
+                    "Some nodes on the system may not have power.",
+                    "There is at least one BMC that has full system power."
+                ]
+            },
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    }
+                ]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Power.BMC.Reset.ChassisPreviouslyLostPower",
+            "Subsystem": "input_power_source",
+            "ActionFlags": ["service_action", "report", "call_home"],
+            "ComponentID": "0x2700",
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x74F1",
+                "Words6To9": {}
+            },
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        {
+                            "Priority": "high",
+                            "Procedure": "BMC0009"
+                        }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "Chassis previously lost input power causing BMC reset.",
+                "Message": "Chassis input power is missing.",
+                "Notes": [
+                    "At least one node has a latched input power fault, which caused the BMC to get reset.",
+                    "This PEL is used to leave a clue as to which node caused the reset.."
+                ]
+            },
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    }
+                ]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Power.Chassis.PresentDetection.Incorrect",
+            "Subsystem": "input_power_source",
+            "ActionFlags": ["service_action", "report", "call_home"],
+            "ComponentID": "0x2700",
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x88E0",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        {
+                            "Priority": "high",
+                            "Procedure": "BMC0004"
+                        }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "Chassis present detection is incorrect.",
+                "Message": "Chassis present detection is incorrect",
+                "Notes": [
+                    "Callout fsi cables, then Barton loc code, the Comal code."
+                ]
+            },
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    }
+                ]
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.Power.Chassis.Missing.ShouldBePresent",
+            "Subsystem": "input_power_source",
+            "ActionFlags": ["service_action", "report", "call_home"],
+            "ComponentID": "0x2700",
+            "SRC": {
+                "Type": "11",
+                "ReasonCode": "0x88F0",
+                "Words6To9": {}
+            },
+
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        {
+                            "Priority": "high",
+                            "Procedure": "BMC0004"
+                        }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "Chassis present detection is missing but it should be present.",
+                "Message": "Chassis is reported as missing when previously it was present",
+                "Notes": [
+                    "Callout fsi cables, then other Barton/Jolleyville loc code, then this Barton loc code, then Comal loc code."
+                ]
+            },
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    }
+                ]
+            }
+        },
+
+        {
             "Name": "xyz.openbmc_project.Power.Regulators.Error.ConfigFile",
             "Subsystem": "power",
             "ComponentID": "0x2700",
@@ -6581,6 +6765,164 @@
                 "Message": "BMC/System/Resource dump has been offloaded"
             }
         },
+
+        {
+            "Name": "xyz.openbmc_project.State.BMC.Redundancy.FailoverStarted",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x8000",
+            "Severity": "non_error",
+            "SRC": {
+                "ReasonCode": "0x8001",
+                "Words6To9": {
+                    "6": {
+                        "Description": "Failover Requester Value",
+                        "AdditionalDataPropSource": "FORequesterVal"
+                    }
+                }
+            },
+            "Documentation": {
+                "Description": "A BMC failover has been started",
+                "Message": "A BMC failover has been started",
+                "Notes": [
+                    "The requester is in plain text in a UserData section."
+                ]
+            },
+            "JournalCapture": {
+                "NumLines": 50
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.State.BMC.Redundancy.FailoverBlocked",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x8000",
+            "SRC": {
+                "ReasonCode": "0x8002",
+                "Words6To9": {
+                    "6": {
+                        "Description": "Failover Requester Value",
+                        "AdditionalDataPropSource": "FORequesterVal"
+                    },
+                    "7": {
+                        "Description": "Block Reason Value",
+                        "AdditionalDataPropSource": "FOBlockedReasonVal"
+                    }
+                }
+            },
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC000A" }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "A request to start a failover was blocked",
+                "Message": "A request to start a failover was blocked",
+                "Notes": [
+                    "A UserData section shows the requester and the reason",
+                    "for the block in plain text.  The severity will be",
+                    "Informational if the request came from rbmctool, otherwise",
+                    "it will be Predictive."
+                ]
+            },
+            "JournalCapture": {
+                "NumLines": 20
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.State.BMC.Redundancy.RedundancyManuallyDisabled",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0x8000",
+            "Severity": "non_error",
+            "SRC": {
+                "ReasonCode": "0x8003",
+                "Words6To9": {}
+            },
+            "Documentation": {
+                "Description": "Redundancy has been manually disabled",
+                "Message": "Redundancy has been manually disabled",
+                "Notes": ["Someone manually disabled redundancy."]
+            },
+            "JournalCapture": {
+                "NumLines": 20
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.State.BMC.Redundancy.PassiveDueToError",
+            "Subsystem": "cec_hardware",
+            "ComponentID": "0x8000",
+            "Severity": "unrecoverable_redundancy_loss",
+            "SRC": {
+                "ReasonCode": "0x8004",
+                "Words6To9": {
+                    "6": {
+                        "Description": "Role Reason Value",
+                        "AdditionalDataPropSource": "RoleReasonVal"
+                    }
+                }
+            },
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC000C" }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "The BMC claimed the passive role due to an error",
+                "Message": "The BMC claimed the passive role due to an error",
+                "Notes": [
+                    "Due to an error the BMC cannot be active and must be passive.",
+                    "Even if the other BMC is active, redundancy cannot be enabled.",
+                    "Check the UserData for the role reason in plain text."
+                ]
+            },
+            "JournalCapture": {
+                "NumLines": 75
+            }
+        },
+
+        {
+            "Name": "xyz.openbmc_project.State.BMC.Redundancy.NoRedundancy",
+            "Subsystem": "cec_hardware",
+            "ComponentID": "0x8000",
+            "Severity": "unrecoverable_redundancy_loss",
+            "SRC": {
+                "ReasonCode": "0x8005",
+                "Words6To9": {
+                    "6": {
+                        "Description": "Reason For No Redundancy Value",
+                        "AdditionalDataPropSource": "FirstReasonVal"
+                    },
+                    "7": {
+                        "Description": "Total Number of Reasons",
+                        "AdditionalDataPropSource": "ReasonsCount"
+                    }
+                }
+            },
+            "Callouts": [
+                {
+                    "CalloutList": [
+                        { "Priority": "high", "Procedure": "BMC000B" }
+                    ]
+                }
+            ],
+            "Documentation": {
+                "Description": "BMC redundancy cannot be enabled",
+                "Message": "BMC redundancy cannot be enabled",
+                "Notes": [
+                    "The UserData will have plain text descriptions of the reason(s)",
+                    "why redundancy can't be enabled."
+                ]
+            },
+            "JournalCapture": {
+                "NumLines": 75
+            }
+        },
+
         {
             "Name": "xyz.openbmc_project.Memory.MemoryECC.Error.isLoggingLimitReached",
             "Subsystem": "cec_hardware",
