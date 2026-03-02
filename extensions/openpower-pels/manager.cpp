@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "config.h"
+
 #include "manager.hpp"
 
 #include "additional_data.hpp"
 #include "elog_serialize.hpp"
 #include "json_utils.hpp"
+#include "log_id.hpp"
 #include "pel.hpp"
 #include "pel_entry.hpp"
 #include "service_indicators.hpp"
@@ -78,6 +82,12 @@ void Manager::create(const std::string& message, uint32_t obmcLogID,
                      const FFDCEntries& ffdc)
 {
     AdditionalData ad{additionalData};
+
+    // Extract the latest BMC position value
+    if constexpr (USE_BMC_POS_IN_ID || IS_UNIT_TEST)
+    {
+        position::extractBMCPostionFromLogID(obmcLogID);
+    }
 
     // If a PEL was passed in via a filename or in an ESEL,
     // use that.  Otherwise, create one.
