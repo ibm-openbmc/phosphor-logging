@@ -64,6 +64,15 @@ void extractBMCPostionFromLogID(uint32_t obmcID)
     }
 }
 
+std::optional<uint32_t> getBMCPosition()
+{
+    if (bmcPosition != invalidPELIDPosition)
+    {
+        return bmcPosition;
+    }
+    return std::nullopt;
+}
+
 } // namespace position
 
 namespace detail
