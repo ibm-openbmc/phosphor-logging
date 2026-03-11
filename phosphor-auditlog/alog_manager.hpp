@@ -57,7 +57,7 @@ class ALManager : public ALObject
      *            value of 1.
      * @return unix_fd A read-only file descriptor to the parsed file.
      */
-    sdbusplus::message::unix_fd getLatestEntries(uint32_t maxCount) override;
+    sdbusplus::message::unix_fd getLatestEntries(size_t maxCount) override;
 
   private:
     /**
