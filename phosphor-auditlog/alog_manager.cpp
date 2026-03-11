@@ -49,7 +49,7 @@ sdbusplus::message::unix_fd ALManager::getAuditLog()
     return fd;
 }
 
-sdbusplus::message::unix_fd ALManager::getLatestEntries(uint32_t maxEvents)
+sdbusplus::message::unix_fd ALManager::getLatestEntries(size_t maxEvents)
 {
 #ifdef AUDITLOG_KEEP_JSONFILE
     ALParseFile parsedFile("/tmp/auditEntries.json");

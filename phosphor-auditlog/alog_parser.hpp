@@ -152,7 +152,7 @@ class ALParseLatest : public ALParser
      *  @param[in] maxEvents Maximum number of events to return.
      *  @param[in] parsedFile Initialized file for holding parsed log events
      */
-    ALParseLatest(uint32_t maxEvents, ALParseFile& parsedFile) :
+    ALParseLatest(size_t maxEvents, ALParseFile& parsedFile) :
         ALParser(parsedFile)
     {
         lg2::debug("Constructing ALParseLatest: {MAXCOUNT}", "MAXCOUNT",
