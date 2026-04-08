@@ -321,13 +321,6 @@ class DataInterfaceBase
     }
 
     /**
-     * @brief Returns the motherboard CCIN
-     *
-     * @return std::string The motherboard CCIN
-     */
-    virtual std::string getMotherboardCCIN() const = 0;
-
-    /**
      * @brief Returns the system IM
      *
      * @return std::string The system IM
@@ -763,13 +756,6 @@ class DataInterface : public DataInterfaceBase
     std::string getMachineSerialNumber() const override;
 
     /**
-     * @brief Returns the motherboard CCIN
-     *
-     * @return std::string The motherboard CCIN
-     */
-    std::string getMotherboardCCIN() const override;
-
-    /**
      * @brief Returns the system IM
      *
      * @return std::vector The system IM keyword in 4 byte vector
@@ -986,6 +972,15 @@ class DataInterface : public DataInterfaceBase
      * @return The D-Bus paths.
      */
     DBusPathList getPaths(const DBusInterfaceList& interfaces) const;
+
+    /**
+     * @brief Wrapper for the mapper's GetSubTree
+     *
+     * @param[in] interfaces - The desired interfaces
+     *
+     * @return The D-Bus paths.
+     */
+    DBusSubTree getSubTree(const DBusInterfaceList& interfaces) const;
 
     /**
      * @brief The interfacesAdded callback used on the inventory to
