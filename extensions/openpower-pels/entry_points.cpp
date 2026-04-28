@@ -94,5 +94,13 @@ void getLogIDWithHwIsolation(std::vector<uint32_t>& logIDs)
 
 REGISTER_EXTENSION_FUNCTION(getLogIDWithHwIsolation)
 
+void pelEntryRestored(uint32_t obmcId,
+                      [[maybe_unused]] const std::string& objectPath)
+{
+    manager->linkPELToEventLog(obmcId);
+}
+
+REGISTER_EXTENSION_FUNCTION(pelEntryRestored)
+
 } // namespace pels
 } // namespace openpower

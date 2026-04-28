@@ -783,7 +783,10 @@ void Manager::setupErrorFileWatch()
     // first and moved into place only after the write completes. Using
     // IN_MOVED_TO ensures we react only when the finalized file appears in the
     // target directory.
-    uint32_t mask = IN_MOVED_TO;
+    //
+    // IN_DELETE handles synced file removals so the corresponding in-memory
+    // event log entry is also removed.
+    uint32_t mask = IN_MOVED_TO | IN_DELETE;
 
     if (!util::setupInotifyWatch(errDir, mask, errDirInotifyFD,
                                  errDirWatcherWD))
@@ -836,13 +839,28 @@ void Manager::errorFileChanged(sdeventplus::source::IO&, int, uint32_t revents)
 
                 if (ev->mask & IN_MOVED_TO)
                 {
-                    if (!entries.contains(idNum))
+                    if (entries.contains(idNum))
+                    {
+                        if (!refreshFromDisk(idNum))
+                        {
+                            lg2::error("Failed to refresh entry {ID} from disk",
+                                       "ID", idNum);
+                        }
+                    }
+                    else
                     {
                         if (!restoreFromDisk(idNum))
                         {
                             lg2::error("Failed to restore entry {ID} from disk",
                                        "ID", idNum);
                         }
+                    }
+                }
+                else if (ev->mask & IN_DELETE)
+                {
+                    if (entries.contains(idNum))
+                    {
+                        erase(idNum);
                     }
                 }
             }
@@ -904,10 +922,65 @@ bool Manager::restoreFromDisk(uint32_t id)
 
     it->second->emit_object_added();
 
+    for (auto& func : Extensions::getExtensionLogAssociationFunctions())
+    {
+        try
+        {
+            func(id, objPath);
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error(
+                "An extension's PEL entry link function threw an exception: {ERROR}",
+                "ERROR", e);
+        }
+    }
+
     if (bmcPosMgr->idContainsCurrentPosition(id))
     {
         entryId = std::max(entryId, id);
     }
+
+    return true;
+}
+
+bool Manager::refreshFromDisk(uint32_t id)
+{
+    auto it = entries.find(id);
+    if (it == entries.end() || !it->second)
+    {
+        lg2::error("Unknown refreshed entry ID {ID}", "ID", id);
+        return false;
+    }
+
+    const fs::path path = paths::error() / std::to_string(id);
+
+    std::error_code ec;
+    if (!fs::is_regular_file(path, ec))
+    {
+        return false;
+    }
+
+    // Max uint32_t value
+    const uint32_t tempId = 0xFFFFFFFF;
+    auto tempEntry = std::make_unique<Entry>(
+        busLog, std::string(OBJ_ENTRY) + "/" + std::to_string(tempId), tempId,
+        *this);
+
+    // Read the persisted entry data from disk into the temporary entry
+    if (!deserialize(path, *tempEntry))
+    {
+        lg2::error("Failed to deserialize entry {ID} from {PATH}", "ID", id,
+                   "PATH", path);
+        return false;
+    }
+
+    // Assign properties from the deserialized temp entry using assignment
+    // operator, will only update properties that differ
+    auto& existingEntry = it->second;
+    *existingEntry = *tempEntry;
+
+    existingEntry->path(path, true);
 
     return true;
 }
