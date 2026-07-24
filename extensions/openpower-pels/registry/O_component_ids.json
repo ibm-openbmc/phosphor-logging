@@ -20,5 +20,6 @@
     "E500": "bmc hw diags",
     "F100": "bmc faultlog",
     "F300": "bmc memory ECC errors",
-    "F500": "bmc acfshell"
+    "F500": "bmc acfshell",
+    "F600": "bmc time management"
 }
