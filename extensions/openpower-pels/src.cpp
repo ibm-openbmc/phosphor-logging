@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "config.h"
+
 #include "src.hpp"
 
 #include "device_callouts.hpp"
 #include "json_utils.hpp"
-#include "paths.hpp"
+#include "log_id.hpp"
 #include "pel_values.hpp"
 #ifdef PELTOOL
 #include <Python.h>
@@ -29,6 +31,7 @@
 #include <phosphor-logging/lg2.hpp>
 
 #include <format>
+#include <limits>
 
 namespace openpower
 {
@@ -37,6 +40,10 @@ namespace pels
 namespace pv = openpower::pels::pel_values;
 namespace rg = openpower::pels::message;
 using namespace std::string_literals;
+
+// Single-chassis systems use chassis number 1 when the BMC chassis number is
+// unavailable.
+constexpr uint16_t DEFAULT_BMC_CHASSIS_NO = 1;
 
 #ifdef PELTOOL
 using orderedJSON = nlohmann::ordered_json;
@@ -829,7 +836,8 @@ void SRC::addCallouts(const message::Entry& regEntry,
     addDevicePathCallouts(additionalData, dataIface);
 
     addRegistryCallouts(registryCallouts, dataIface,
-                        (useInvForSymbolicFRULocCode) ? item : std::nullopt);
+                        (useInvForSymbolicFRULocCode) ? item : std::nullopt,
+                        additionalData);
 
     if (!jsonCallouts.empty())
     {
@@ -957,13 +965,15 @@ std::vector<message::RegistryCallout> SRC::getRegistryCallouts(
 void SRC::addRegistryCallouts(
     const std::vector<message::RegistryCallout>& callouts,
     const DataInterfaceBase& dataIface,
-    std::optional<std::string> trustedSymbolicFRUInvPath)
+    std::optional<std::string> trustedSymbolicFRUInvPath,
+    const AdditionalData& additionalData)
 {
     try
     {
         for (const auto& callout : callouts)
         {
-            addRegistryCallout(callout, dataIface, trustedSymbolicFRUInvPath);
+            addRegistryCallout(callout, dataIface, trustedSymbolicFRUInvPath,
+                               additionalData);
 
             // Only the first callout gets the inventory path
             if (trustedSymbolicFRUInvPath)
@@ -983,26 +993,13 @@ void SRC::addRegistryCallouts(
 void SRC::addRegistryCallout(
     const message::RegistryCallout& regCallout,
     const DataInterfaceBase& dataIface,
-    const std::optional<std::string>& trustedSymbolicFRUInvPath)
+    const std::optional<std::string>& trustedSymbolicFRUInvPath,
+    const AdditionalData& additionalData)
 {
     std::unique_ptr<src::Callout> callout;
     auto locCode = regCallout.locCode;
     bool locExpanded = true;
-
-    if (!locCode.empty())
-    {
-        try
-        {
-            locCode = dataIface.expandLocationCode(locCode, 0);
-        }
-        catch (const std::exception& e)
-        {
-            auto msg = "Unable to expand location code " + locCode + ": " +
-                       e.what();
-            addDebugData(msg);
-            locExpanded = false;
-        }
-    }
+    uint16_t chassisNumber = DEFAULT_BMC_CHASSIS_NO;
 
     // Via the PEL values table, get the priority enum.
     // The schema will have validated the priority was a valid value.
@@ -1011,6 +1008,77 @@ void SRC::addRegistryCallout(
     assert(priorityIt != pv::calloutPriorityValues.end());
     auto priority =
         static_cast<CalloutPriority>(std::get<pv::fieldValuePos>(*priorityIt));
+
+    if (!locCode.empty())
+    {
+        // Determine chassis number from registry, additional data
+        if (regCallout.chassisNumber.has_value())
+        {
+            chassisNumber = regCallout.chassisNumber.value();
+        }
+        else if (!regCallout.chassisNumADKey.empty())
+        {
+            auto adValue = additionalData.getValue(regCallout.chassisNumADKey);
+            if (!adValue)
+            {
+                addDebugData(std::format(
+                    "Missing AdditionalData key for chassis number: {}",
+                    regCallout.chassisNumADKey));
+                addLocationCodeOnlyCallout(locCode, priority);
+                return;
+            }
+            try
+            {
+                chassisNumber = static_cast<uint16_t>(
+                    std::stoul(adValue.value(), nullptr, 0));
+            }
+            catch (const std::exception& e)
+            {
+                addDebugData(std::format(
+                    "Invalid chassis number in AdditionalData key {} with value {} : {}",
+                    regCallout.chassisNumADKey, adValue.value(), e.what()));
+                // If unable to find a chassis position
+                // Setting locExpanded explicitly as failed
+                locExpanded = false;
+            }
+        }
+        else
+        {
+            // Running BMC's chassis is considered
+            auto chassis = position::getBMCChassisNum();
+            // If unable to find a chassis position in redundant BMC system
+            // set locExpanded as failed
+            // To fail the expansion of location code, unknown chassis set as -1
+            if (!chassis.has_value() && REDUNDANT_BMC)
+            {
+                addDebugData(std::format(
+                    "Unable to find BMC chassis position. LocationCode: {}",
+                    locCode));
+                locExpanded = false;
+                chassisNumber = std::numeric_limits<uint16_t>::max();
+            }
+            else
+            {
+                chassisNumber = static_cast<uint16_t>(
+                    chassis.value_or(DEFAULT_BMC_CHASSIS_NO));
+            }
+        }
+
+        if (chassisNumber != std::numeric_limits<uint16_t>::max())
+        {
+            try
+            {
+                locCode = dataIface.expandLocationCode(locCode, chassisNumber);
+            }
+            catch (const std::exception& e)
+            {
+                auto msg = "Unable to expand location code " + locCode + ": " +
+                           e.what();
+                addDebugData(msg);
+                locExpanded = false;
+            }
+        }
+    }
 
     if (!regCallout.procedure.empty())
     {
@@ -1074,8 +1142,8 @@ void SRC::addRegistryCallout(
         try
         {
             // Get the inventory item from the unexpanded location code
-            inventoryPaths =
-                dataIface.getInventoryFromLocCode(regCallout.locCode, 0, false);
+            inventoryPaths = dataIface.getInventoryFromLocCode(
+                regCallout.locCode, chassisNumber, false);
         }
         catch (const std::exception& e)
         {
@@ -1280,22 +1348,49 @@ void SRC::addJSONCallout(const nlohmann::json& jsonCallout,
     std::string locCode;
     std::string unexpandedLocCode;
     std::unique_ptr<src::Callout> callout;
+    uint16_t chassisNumber = DEFAULT_BMC_CHASSIS_NO;
 
     // Expand the location code if it's there
     if (jsonCallout.contains("LocationCode"))
     {
         unexpandedLocCode = jsonCallout.at("LocationCode").get<std::string>();
 
-        try
+        if (jsonCallout.contains("ChassisNumber"))
         {
-            locCode = dataIface.expandLocationCode(unexpandedLocCode, 0);
+            chassisNumber = jsonCallout.at("ChassisNumber").get<uint16_t>();
         }
-        catch (const std::exception& e)
+        else
         {
-            addDebugData(std::format("Unable to expand location code {}: {}",
-                                     unexpandedLocCode, e.what()));
-            // Use the value from the JSON so at least there's something
-            locCode = unexpandedLocCode;
+            // Fetch the running BMC chassis
+            auto chassis = position::getBMCChassisNum();
+            chassisNumber =
+                static_cast<uint16_t>(chassis.value_or(DEFAULT_BMC_CHASSIS_NO));
+            if (!chassis.has_value() && REDUNDANT_BMC)
+            {
+                // Unable to find a chassis position for redundant multi-chassis
+                // system
+                addDebugData(std::format(
+                    "Unable to find BMC chassis position. LocationCode: {}",
+                    unexpandedLocCode));
+                chassisNumber = std::numeric_limits<uint16_t>::max();
+            }
+        }
+
+        if (chassisNumber != std::numeric_limits<uint16_t>::max())
+        {
+            try
+            {
+                locCode = dataIface.expandLocationCode(unexpandedLocCode,
+                                                       chassisNumber);
+            }
+            catch (const std::exception& e)
+            {
+                addDebugData(
+                    std::format("Unable to expand location code {}: {}",
+                                unexpandedLocCode, e.what()));
+                // Use the value from the JSON so at least there's something
+                locCode = unexpandedLocCode;
+            }
         }
     }
 
@@ -1349,14 +1444,15 @@ void SRC::addJSONCallout(const nlohmann::json& jsonCallout,
         {
             if (unexpandedLocCode.empty())
             {
-                throw std::runtime_error{"JSON callout needs either an "
-                                         "inventory path or location code"};
+                throw std::runtime_error{
+                    "JSON callout needs either an "
+                    "inventory path or location code with valid chassis"};
             }
 
             try
             {
                 auto inventoryPaths = dataIface.getInventoryFromLocCode(
-                    unexpandedLocCode, 0, false);
+                    unexpandedLocCode, chassisNumber, false);
                 // Just use first path returned since they all
                 // point to the same FRU.
                 inventoryPath = inventoryPaths[0];

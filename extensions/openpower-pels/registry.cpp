@@ -518,6 +518,16 @@ RegistryCallout makeRegistryCallout(const nlohmann::json& json)
         callout.useInventoryLocCode = json["UseInventoryLocCode"].get<bool>();
     }
 
+    if (json.contains("ChassisNumber"))
+    {
+        callout.chassisNumber = json["ChassisNumber"].get<uint16_t>();
+    }
+
+    if (json.contains("ChassisNumADKey"))
+    {
+        callout.chassisNumADKey = json["ChassisNumADKey"].get<std::string>();
+    }
+
     return callout;
 }
 

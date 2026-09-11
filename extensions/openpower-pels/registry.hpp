@@ -220,6 +220,8 @@ struct RegistryCallout
     std::string symbolicFRU;
     std::string symbolicFRUTrusted;
     bool useInventoryLocCode;
+    std::optional<uint16_t> chassisNumber;
+    std::string chassisNumADKey;
 };
 
 /**
@@ -478,7 +480,7 @@ bool getSRCDeconfigFlag(const nlohmann::json& src);
  * @param[in] pelEntry - The PEL entry JSON
  * @param[in] name - The error name, to use in a trace if things go awry.
  *
- * @return uin16_t - The component ID, like 0xFF00
+ * @return uint16_t - The component ID, like 0xFF00
  */
 uint16_t getComponentID(uint8_t srcType, uint16_t reasonCode,
                         const nlohmann::json& pelEntry,
