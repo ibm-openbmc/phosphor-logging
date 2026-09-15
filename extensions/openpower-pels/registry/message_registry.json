@@ -4206,6 +4206,35 @@
                     "AdditionalData property of the event log so that ",
                     "the device is called out but not the communication path."
                 ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
+                ]
             }
         },
 
@@ -4231,6 +4260,35 @@
                     "CALLOUT_INVENTORY_PATH should be specified in the ",
                     "AdditionalData property of the event log so that ",
                     "the device is called out but not the communication path."
+                ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
                 ]
             }
         },
@@ -4259,6 +4317,35 @@
                     "AdditionalData property of the event log.  This will ",
                     "cause the device and the hardware in the communication ",
                     "path to be called out."
+                ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
                 ]
             }
         },
@@ -4529,6 +4616,19 @@
                     "The regulators configuration file could not be found, ",
                     "could not be read, or had invalid contents."
                 ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 30
+                    }
+                ]
             }
         },
 
@@ -4560,6 +4660,19 @@
                     "could not be read, or had invalid contents.  As a result ",
                     "voltage regulators could not be configured, and the ",
                     "chassis could not be powered on."
+                ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 30
+                    }
                 ]
             }
         },
@@ -4763,6 +4876,39 @@
                     "The error details must be provided in the AdditionalData ",
                     "property of the event log."
                 ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
+                ]
             }
         },
 
@@ -4787,6 +4933,39 @@
                     "keywords in the AdditionalData property of the event ",
                     "log.  This will cause the device and the hardware in the ",
                     "communication path to be called out."
+                ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
                 ]
             }
         },
@@ -4813,6 +4992,39 @@
                     "in the AdditionalData property of the event log so that ",
                     "the device is called out but not the communication path."
                 ]
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
+                ]
             }
         },
 
@@ -4838,6 +5050,39 @@
             "Documentation": {
                 "Description": "A firmware inter-process communication (D-Bus) error occurred",
                 "Message": "A firmware inter-process communication (D-Bus) error occurred"
+            },
+
+            "JournalCapture": {
+                "Sections": [
+                    {
+                        "SyslogID": "phosphor-regulators",
+                        "NumLines": 30
+                    },
+                    {
+                        "SyslogID": "phosphor-power-control",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-psu-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-power",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-state-manager",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "phosphor-chassis-availability-monitor",
+                        "NumLines": 15
+                    },
+                    {
+                        "SyslogID": "systemd",
+                        "NumLines": 15
+                    }
+                ]
             }
         },
 
