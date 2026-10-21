@@ -32,7 +32,7 @@ using DBusPathList = std::vector<DBusPath>;
 using DBusPropertyMap = std::map<DBusProperty, DBusValue>;
 using DBusInterfaceMap = std::map<DBusInterface, DBusPropertyMap>;
 using DBusObjectMap =
-    std::map<sdbusplus::message::object_path, DBusInterfaceMap>;
+    std::map<sdbusplus::object_path, DBusInterfaceMap>;
 using DBusSubTree =
     std::map<DBusPath, std::map<DBusService, DBusInterfaceList>>;
 

@@ -14,7 +14,7 @@ namespace lg2
  *  perform the operation.
  */
 auto commit(sdbusplus::exception::generated_event_base&& e)
-    -> sdbusplus::message::object_path;
+    -> sdbusplus::object_path;
 
 /** Resolve an existing event/error.
  *
@@ -24,7 +24,7 @@ auto commit(sdbusplus::exception::generated_event_base&& e)
  *  Note: Similar to elog(), this will use the default dbus connection to
  *  perform the operation.
  */
-void resolve(const sdbusplus::message::object_path& logPath);
+void resolve(const sdbusplus::object_path& logPath);
 
 /** Commit a generated event/error (using async context).
  *
@@ -34,7 +34,7 @@ void resolve(const sdbusplus::message::object_path& logPath);
  */
 auto commit(sdbusplus::async::context& ctx,
             sdbusplus::exception::generated_event_base&& e)
-    -> sdbusplus::async::task<sdbusplus::message::object_path>;
+    -> sdbusplus::async::task<sdbusplus::object_path>;
 
 /** Resolve an existing event/error (using async context).
  *
@@ -43,7 +43,7 @@ auto commit(sdbusplus::async::context& ctx,
  *  @return None
  */
 auto resolve(sdbusplus::async::context& ctx,
-             const sdbusplus::message::object_path& logPath)
+             const sdbusplus::object_path& logPath)
     -> sdbusplus::async::task<>;
 
 } // namespace lg2

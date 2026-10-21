@@ -115,7 +115,7 @@ auto extractEvent(sdbusplus::exception::generated_event_base&& t)
 } // namespace details
 
 auto commit(sdbusplus::exception::generated_event_base&& t)
-    -> sdbusplus::message::object_path
+    -> sdbusplus::object_path
 {
     if constexpr (LG2_COMMIT_JOURNAL)
     {
@@ -136,13 +136,13 @@ auto commit(sdbusplus::exception::generated_event_base&& t)
 
         auto reply = b.call(m);
 
-        return reply.unpack<sdbusplus::message::object_path>();
+        return reply.unpack<sdbusplus::object_path>();
     }
 
     return {};
 }
 
-void resolve(const sdbusplus::message::object_path& logPath)
+void resolve(const sdbusplus::object_path& logPath)
 {
     if constexpr (LG2_COMMIT_DBUS)
     {
@@ -158,7 +158,7 @@ void resolve(const sdbusplus::message::object_path& logPath)
 
 auto commit(sdbusplus::async::context& ctx,
             sdbusplus::exception::generated_event_base&& t)
-    -> sdbusplus::async::task<sdbusplus::message::object_path>
+    -> sdbusplus::async::task<sdbusplus::object_path>
 {
     using details::Create;
 
@@ -179,7 +179,7 @@ auto commit(sdbusplus::async::context& ctx,
 }
 
 auto resolve(sdbusplus::async::context& ctx,
-             const sdbusplus::message::object_path& logPath)
+             const sdbusplus::object_path& logPath)
     -> sdbusplus::async::task<>
 {
     using details::Entry;
