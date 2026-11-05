@@ -46,7 +46,10 @@ class ALParser
 
     ~ALParser()
     {
-        auparse_destroy(au);
+        if (au != nullptr)
+        {
+            auparse_destroy(au);
+        }
     }
 
     /**
