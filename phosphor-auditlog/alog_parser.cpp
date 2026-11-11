@@ -16,10 +16,18 @@
 #include <list>
 #include <map>
 #include <string>
-#include <string_view>
 
 namespace phosphor::auditlog
 {
+
+/* auparse functions returning strings can return nullptr on failure.
+ * Constructing a std::string or JSON string from nullptr is not safe, so
+ * return an empty string in that case.
+ */
+static std::string stringOrEmpty(const char* str)
+{
+    return (str != nullptr) ? str : "";
+}
 
 bool ALParser::getNextEvent()
 {
@@ -93,7 +101,7 @@ void ALParser::fillAuditEntry(nlohmann::json& parsedEntry)
     parsedEntry["MessageId"] = "OpenBMC.0.5.AuditLogEntry";
 
     /* MessageArgs: msg */
-    auto recMsg = auparse_get_record_text(au);
+    auto recMsg = stringOrEmpty(auparse_get_record_text(au));
     auto messageArgs = nlohmann::json::array({recMsg});
 
     parsedEntry["MessageArgs"] = std::move(messageArgs);
@@ -123,11 +131,11 @@ bool ALParser::fillMsgArgs(nlohmann::json& parsedEntry)
     {
         fieldIdx++;
 
-        // Can return nullptr
         const char* fieldName = auparse_get_field_name(au);
-        std::string_view fieldTxt = auparse_get_field_str(au);
+        const char* fieldStr = auparse_get_field_str(au);
 
-        if ((fieldName == nullptr) || (fieldTxt.empty()))
+        if ((fieldName == nullptr) || (fieldStr == nullptr) ||
+            (fieldStr[0] == '\0'))
         {
             lg2::debug("Unexpected field:{FIELDIDX}", "FIELDIDX", fieldIdx);
             continue;
@@ -145,19 +153,20 @@ bool ALParser::fillMsgArgs(nlohmann::json& parsedEntry)
                 lg2::warning(
                     "Skipping entry with repeated field:{FIELDNAME} for ID:{ID}",
                     "FIELDNAME", fieldName, "ID", parsedEntry.value("ID", ""));
-                auto recMsg = auparse_get_record_text(au);
+                auto recMsg = stringOrEmpty(auparse_get_record_text(au));
                 lg2::debug("{RECTEXT}", "RECTEXT", recMsg);
                 return false;
             }
 
             // Strips quotes and interprets ids
-            parsedEntry[mapEntry->second] = auparse_interpret_field(au);
+            parsedEntry[mapEntry->second] =
+                stringOrEmpty(auparse_interpret_field(au));
             nFields++;
 #ifdef AUDITLOG_FULL_DEBUG
             lg2::debug(
                 "Field {NFIELD} : {FIELDNAME} = {FIELDSTR} argIdx = {ARGIDX}",
                 "NFIELD", fieldIdx, "FIELDNAME", fieldName, "FIELDSTR",
-                fieldTxt, "ARGIDX", mapEntry->second);
+                fieldStr, "ARGIDX", mapEntry->second);
 #endif // AUDITLOG_FULL_DEBUG
         }
     } while (auparse_next_field(au) == 1);
@@ -171,11 +180,11 @@ bool ALParser::fillMsgArgs(nlohmann::json& parsedEntry)
         if (auparse_find_field(au, "id"))
         {
             // Interpret the id to get the name and strip quotes
-            parsedEntry["Account"] = auparse_interpret_field(au);
+            parsedEntry["Account"] = stringOrEmpty(auparse_interpret_field(au));
             nFields++;
 #ifdef AUDITLOG_FULL_DEBUG
             lg2::debug("Field special case : id = {FIELDSTR} argIdx = Account",
-                       "FIELDSTR", auparse_get_field_str(au));
+                       "FIELDSTR", stringOrEmpty(auparse_get_field_str(au)));
 #endif // AUDITLOG_FULL_DEBUG
         }
     }
@@ -264,7 +273,7 @@ bool ALParser::formatGeneral(nlohmann::json& parsedEntry)
         std::format("{}.{}:{}", fullTimestamp->sec, fullTimestamp->milli,
                     fullTimestamp->serial);
 
-    auto recMsg = auparse_get_record_text(au);
+    auto recMsg = stringOrEmpty(auparse_get_record_text(au));
     parsedEntry["Event"] = recMsg;
 
 #ifdef AUDITLOG_FULL_DEBUG
@@ -277,7 +286,7 @@ bool ALParser::formatGeneral(nlohmann::json& parsedEntry)
 
 bool ALParser::formatRaw(nlohmann::json& parsedEntry)
 {
-    auto recMsg = auparse_get_record_text(au);
+    auto recMsg = stringOrEmpty(auparse_get_record_text(au));
     parsedEntry["Event"] = recMsg;
 
 #ifdef AUDITLOG_FULL_DEBUG

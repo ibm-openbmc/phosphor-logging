@@ -28,7 +28,14 @@ class ALParseFile
         if (!pathName.empty() && !keepFile)
         {
             lg2::debug("Removing {FILE}", "FILE", pathName);
-            std::filesystem::remove(pathName);
+
+            std::error_code ec;
+            std::filesystem::remove(pathName, ec);
+            if (ec)
+            {
+                lg2::error("Failed to remove {FILE}: {ERROR}", "FILE", pathName,
+                           "ERROR", ec.message());
+            }
         }
     }
 
