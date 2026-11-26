@@ -24,5 +24,6 @@
     "F100": "BMC: faultlog",
     "F300": "BMC: memory ECC errors",
     "F500": "BMC: acfshell",
-    "F600": "BMC: time management"
+    "F600": "BMC: time management",
+    "F700": "BMC: concurrent maintenance"
 }
