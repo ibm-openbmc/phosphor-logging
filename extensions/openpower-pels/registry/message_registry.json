@@ -8089,6 +8089,23 @@
                     "RTC hardware replacement is generally not required unless the failure persists.."
                 ]
             }
+        },
+        {
+            "Name": "com.ibm.ConcurrentMaintenance.Error.FSIFailure",
+            "Subsystem": "bmc_firmware",
+            "ComponentID": "0xF700",
+            "Severity": "critical",
+            "ActionFlags": ["report"],
+
+            "SRC": {
+                "ReasonCode": "0xF701",
+                "Words6To9": {}
+            },
+
+            "Documentation": {
+                "Description": "FSI failure during concurrent maintenance",
+                "Message": "FSI failure during concurrent maintenance"
+            }
         }
     ]
 }
