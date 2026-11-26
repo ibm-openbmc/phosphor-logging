@@ -8,9 +8,9 @@ extra_sources = []
 extra_dependencies = []
 extra_args = []
 
-phal_backend = get_option('phal_backend')
+openpower_pel_phal_backend = get_option('openpower_pel_phal_backend')
 
-if phal_backend == 'legacy'
+if openpower_pel_phal_backend == 'legacy'
     extra_sources += [
         'sbe_ffdc_handler.cpp',
         'fapi_data_process.cpp',
@@ -25,6 +25,11 @@ if phal_backend == 'legacy'
     ]
     extra_args += ['-DPEL_ENABLE_PHAL']
     log_manager_ext_args += ['-DPEL_ENABLE_PHAL']
+elif openpower_pel_phal_backend == 'next'
+    extra_sources += ['phal_service_actions.cpp']
+    extra_dependencies += [dependency('hostfw_phal')]
+    extra_args += ['-DPEL_ENABLE_PHAL_NEXT']
+    log_manager_ext_args += ['-DPEL_ENABLE_PHAL_NEXT']
 endif
 
 libpel_sources = files(
